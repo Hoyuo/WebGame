@@ -13,9 +13,20 @@ app.get('/', function (req, res) {
     res.send('Hello World');
 });
 
+var socket_ids = [];
+var count = 0;
+
+
+
+function registerUser(socket, nickname) {
+    socket.get('nickname', function (err, pre_nick) {
+        if (pre_nick != undefined) delete socket_ids[pre_nick];
+        socket_ids[nickname] = socket.id
+    });
+}
+
 io.sockets.on('connection', function (socket) {
-    // new client is here!
-    console.log('Connection');
+    socket.emit('new', {nickname : 'player' + count});
 
     socket.on('btn', function(data) {
         console.log("btn : " + data);
