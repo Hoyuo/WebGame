@@ -46,9 +46,9 @@ io.sockets.on('connection', function (socket) {
             var socket_id = socket_ids['webPage'];
             if (socket_id != undefined) {
                 if (iValue != -1)
-                    io.sockets.socket(socket_id).emit('btn_2', data);
-                else
                     io.sockets.socket(socket_id).emit('btn_1', data);
+                else
+                    io.sockets.socket(socket_id).emit('btn_2', data);
             }// if
         });
     });
@@ -59,9 +59,9 @@ io.sockets.on('connection', function (socket) {
             var socket_id = socket_ids['webPage'];
             if (socket_id != undefined) {
                 if (iValue != -1)
-                    io.sockets.socket(socket_id).emit('pad_2', data, flag);
-                else
                     io.sockets.socket(socket_id).emit('pad_1', data, flag);
+                else
+                    io.sockets.socket(socket_id).emit('pad_2', data, flag);
             }// if
         });
     });

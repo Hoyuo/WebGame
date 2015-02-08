@@ -3,60 +3,12 @@
 <head>
     <script src="http://localhost:13000/socket.io/socket.io.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>JSNES: A JavaScript NES emulator</title>
+    <title>WebGame</title>
 </head>
 
 <body>
-<h1>JSNES</h1>
 
 <div id="emulator"></div>
-<h2>Controls</h2>
-<table id="controls">
-    <tr>
-        <th>Button</th>
-        <th>Player 1</th>
-        <th>Player 2</th>
-    </tr>
-    <tr>
-        <td>Left</td>
-        <td>Left</td>
-        <td>Num-4</td>
-    <tr>
-        <td>Right</td>
-        <td>Right</td>
-        <td>Num-6</td>
-    </tr>
-    <tr>
-        <td>Up</td>
-        <td>Up</td>
-        <td>Num-8</td>
-    </tr>
-    <tr>
-        <td>Down</td>
-        <td>Down</td>
-        <td>Num-2</td>
-    </tr>
-    <tr>
-        <td>A</td>
-        <td>X</td>
-        <td>Num-7</td>
-    </tr>
-    <tr>
-        <td>B</td>
-        <td>Z/Y</td>
-        <td>Num-9</td>
-    </tr>
-    <tr>
-        <td>Start</td>
-        <td>Enter</td>
-        <td>Num-1</td>
-    </tr>
-    <tr>
-        <td>Select</td>
-        <td>Ctrl</td>
-        <td>Num-3</td>
-    </tr>
-</table>
 
 <script src="lib/jquery-2.1.3.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="lib/dynamicaudio-min.js" type="text/javascript" charset="utf-8"></script>
@@ -76,7 +28,7 @@
             'ui': $('#emulator').JSNESUI({
                 "Homebrew": [
                     ['Concentration Room', 'roms/croom.nes'],
-                    ['LJ65', 'roms/lj65.nes'],
+                    ['LJ65', 'roms/lj65.nes']
                 ],
                 "Working": [
                     ['Bubble Bobble', 'roms/Bubble Bobble (U).nes'],
@@ -124,10 +76,12 @@
                 break;
             case 'select':
                 nes.keyboard.keyDown({keyCode: 17});
+                nes.frame();
                 nes.keyboard.keyUp({keyCode: 17});
                 break;
             case 'start':
                 nes.keyboard.keyDown({keyCode: 13});
+                nes.frame();
                 nes.keyboard.keyUp({keyCode: 13});
                 break;
             default :
@@ -149,10 +103,12 @@
                 break;
             case 'select':
                 nes.keyboard.keyDown({keyCode: 99});
+                nes.frame();
                 nes.keyboard.keyUp({keyCode: 99});
                 break;
             case 'start':
                 nes.keyboard.keyDown({keyCode: 97});
+                nes.frame();
                 nes.keyboard.keyUp({keyCode: 97});
                 break;
             default :
