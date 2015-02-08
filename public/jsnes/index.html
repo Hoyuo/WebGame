@@ -106,7 +106,11 @@
 
     var socket = io.connect();
 
-    socket.on('btn', function (msg) {
+    socket.on('new', function () {
+        socket.emit('newSend', 'webPage');
+    });
+
+    socket.on('btn_1', function (msg) {
         switch (msg) {
             case 'A':
                 nes.keyboard.keyDown({keyCode: 88});
@@ -131,7 +135,32 @@
         }
     });
 
-    socket.on('pad', function (msg, flag) {
+    socket.on('btn_2', function (msg) {
+        switch (msg) {
+            case 'A':
+                nes.keyboard.keyDown({keyCode: 103});
+                nes.frame();
+                nes.keyboard.keyUp({keyCode: 103});
+                break;
+            case 'B':
+                nes.keyboard.keyDown({keyCode: 105});
+                nes.frame();
+                nes.keyboard.keyUp({keyCode: 105});
+                break;
+            case 'select':
+                nes.keyboard.keyDown({keyCode: 99});
+                nes.keyboard.keyUp({keyCode: 99});
+                break;
+            case 'start':
+                nes.keyboard.keyDown({keyCode: 97});
+                nes.keyboard.keyUp({keyCode: 97});
+                break;
+            default :
+                break;
+        }
+    });
+
+    socket.on('pad_1', function (msg, flag) {
         switch (msg) {
             case 'up':
                 if (flag === 0) {
@@ -163,6 +192,43 @@
                     nes.keyboard.keyPress({keyCode: 40});
                 } else {
                     nes.keyboard.keyUp({keyCode: 40});
+                }
+                break;
+        }
+    });
+
+    socket.on('pad_2', function (msg, flag) {
+        switch (msg) {
+            case 'up':
+                if (flag === 0) {
+                    nes.keyboard.keyDown({keyCode: 104});
+                    nes.keyboard.keyPress({keyCode: 104});
+                } else {
+                    nes.keyboard.keyUp({keyCode: 104});
+                }
+                break;
+            case 'right':
+                if (flag === 0) {
+                    nes.keyboard.keyDown({keyCode: 102});
+                    nes.keyboard.keyPress({keyCode: 102});
+                } else {
+                    nes.keyboard.keyUp({keyCode: 102});
+                }
+                break;
+            case 'left':
+                if (flag === 0) {
+                    nes.keyboard.keyDown({keyCode: 100});
+                    nes.keyboard.keyPress({keyCode: 100});
+                } else {
+                    nes.keyboard.keyUp({keyCode: 100});
+                }
+                break;
+            case 'down':
+                if (flag === 0) {
+                    nes.keyboard.keyDown({keyCode: 98});
+                    nes.keyboard.keyPress({keyCode: 98});
+                } else {
+                    nes.keyboard.keyUp({keyCode: 98});
                 }
                 break;
         }
