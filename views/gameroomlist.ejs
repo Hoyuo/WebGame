@@ -3,17 +3,29 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/bootstrap-confirmation.js"></script>
 <script type="text/javascript">
-    function RoomJoin() {
+    function RoomJoin(data) {
         var ret = confirm("방을 입장하시겠습니까?");
         if (ret === true) {
-            location.href = "/JOIN_ROOM";
+            $().redirect("/JOIN_ROOM");
         }
         return true;
     }
     function CreateRoom() {
         location.href = "/CREATEROOM";
     }
+    $(function () {
+        var socket = io.connect();
+        socket.emit('request_room_list');
+
+        socket.on('roomlist', function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var tag = "<tr onclick='RoomJoin(\"" + data[i].roomname + "\")'><td>" + data[i].roomname + '</td><td>' + (i + 1) + '</td><td>' + data[i].no_of_persons + '</td><td>' + '1P' + '</td>';
+                $(tag).appendTo('#gamelist');
+            }
+        });
+    });
 </script>
+
 <div>
     <div class="col-xs-2">
         <button onclick="CreateRoom()" style="background-color: #000080; color: #FFF">Create</button>
@@ -23,7 +35,7 @@
             <h4 class="modal-title">Room List</h4>
         </div>
 
-        <table class="table table-hover">
+        <table id="gamelist" class="table table-hover">
             <thead>
             <tr>
                 <th class="col-xs-7">ROOM NAME</th>
@@ -32,23 +44,6 @@
                 <th class="col-xs-1">1P/2P</th>
             </tr>
             </thead>
-            <% if(true){ %>
-            <tr onclick="RoomJoin()">
-                <td>
-                    우리 보글보글 해요
-                </td>
-                <td>
-                    1
-                </td>
-                <td>
-                    Bubble
-                </td>
-                <td>
-                    1P
-                </td>
-            </tr>
-            <% }else{ %>
-            <% } %>
         </table>
     </div>
 

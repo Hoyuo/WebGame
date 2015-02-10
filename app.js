@@ -83,8 +83,6 @@ app.post('/LOGIN', function (req, res, next) {
 app.post('/LOGINMOBILE', function (req, res, next) {
     req.username = req.body.userId;
     req.password = myHash(req.body.password);
-    console.log(req.username);
-    console.log(req.password);
     next();
 }, routes.moblie_login_post);
 
@@ -100,16 +98,23 @@ function registerUser(socket, nickname) {
     });
 }
 
+function getRoomlist(data) {
+    var roomlist = [];
+    for (var key in data) {
+        if (key.indexOf("/") > -1) {
+            roomlist.push({"roomname": key.split("/").join(""), no_of_persons: data[key].length});
+        }
+    }
+    return roomlist;
+}
+io.set('log level', 2);
 io.sockets.on('connection', function (socket) {
-    console.log('test', io.sockets.manager.rooms);
     socket.emit('new');
 
     socket.on('join', function (data) {
         socket.join(data.roomname);
-        console.log('test', io.sockets.manager.rooms);
         socket.set('room', data.roomname);
         socket.get('room', function (error, room) {
-            console.log(room);
             io.sockets.in(room).emit('join', data.userid);
         });
     });
@@ -123,7 +128,6 @@ io.sockets.on('connection', function (socket) {
         count++;
         count = count % 2;
         registerUser(socket, nickname);
-        console.log(nickname);
     });
 
     socket.on('btn', function (data) {
@@ -155,7 +159,6 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         socket.get('room', function (error, room) {
             socket.leave(room);
-            console.log('test', io.sockets.manager.rooms);
         });
 
         socket.get('nickname', function (err, nickname) {
@@ -165,7 +168,10 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-    socket.on('test', function() {
-        console.log('test');
+    socket.on('request_room_list', function () {
+        // 방 정보(방 이름, 채팅 참여 인원)
+        var roomlist = [];
+        var roomlist = getRoomlist(io.sockets.manager.rooms);
+        socket.emit('roomlist', roomlist);
     });
 });

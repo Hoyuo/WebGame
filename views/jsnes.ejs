@@ -52,6 +52,7 @@
         var socket = io.connect();
         var roomname = "<%= roomname %>";
         var userid = "<%= username %>";
+
         socket.on('new', function () {
             socket.emit('newSend', 'webPage');
             socket.emit('join', {'userid': userid, 'roomname': roomname});

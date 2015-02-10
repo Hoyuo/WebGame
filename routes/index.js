@@ -175,12 +175,13 @@ exports.joinRoom = function(req, res) {
         res.redirect('/');
         return;
     }
-
+    console.log(req.roomname);
     res.render('jsnes', {
         title: 'OldGame',
         url: req.url,
         page: 6,
         login: req.session.login,
-        username: req.session.username
+        username: req.session.username,
+        roomname: req.roomname
     });
 }
