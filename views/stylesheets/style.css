@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "emu";
+    src: url('/fonts/emulogic.eot');
+    src: url('/fonts/emulogic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/emulogic.woff') format('woff'),
+    url('/fonts/emulogic.ttf') format('truetype');
+    src: local(※), url('/fonts/emulogic.woff') format('woff');
+}

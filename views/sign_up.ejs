@@ -1,0 +1,55 @@
+<% layout('layout') %>
+
+<ul class="breadcrumb" style="background-color: #FFFFFF">
+    <br/>
+
+    <form method="post" action="/SIGN_UP">
+        <fieldset>
+            <legend>Sign up</legend>
+            <div class="form-group">
+                <label for="exampleInputEmail">Email</label>
+                <input type="email" class="form-control" name="username" id="user" placeholder="Email" maxlength="64">
+            </div>
+            <center><a onclick="checkUserName()" style="width:100%; color : #FFF; background-color: #000080"
+                       class="btn btn-default">Check User Name</a></center>
+            <div class="form-group">
+                <label for="exampleInputPassword">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password"
+                       maxlength="16">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword">Confirm Password</label>
+                <input type="password" class="form-control" name="confirm_password" id="confirm_password"
+                       placeholder="Confirm Password" maxlength="16">
+            </div>
+            <center>
+                <button type="submit" style="width:100%; color : #FFF; background-color: #000080"
+                        class="btn btn-default">Submit
+                </button>
+            </center>
+        </fieldset>
+    </form>
+    <br/>
+</ul>
+
+<script>
+    function checkUserName() {
+        var username = $('#user').val();
+
+        if (username == '') {
+            alert("Please enter Email");
+        }
+        else {
+            $.get('/CHECKUSERNAME?id=' + username, function (data, err) {
+                if (data == 'true') {
+                    $('#user').val('');
+                    alert('Username already exists. Please enter another Email');
+                }
+                else {
+                    alert('You can use this Email');
+                }
+            });
+        }
+    }
+    ;
+</script>
