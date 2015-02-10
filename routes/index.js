@@ -137,21 +137,6 @@ exports.sign_up_post = function (req, res) {
     }
 };
 
-exports.jsnes = function (req, res) {
-    if (req.session.login !== 'login') {
-        res.redirect('/');
-        return;
-    }
-
-    res.render('jsnes', {
-        title: 'OldGame',
-        url: req.url,
-        page: 6,
-        login: req.session.login,
-        username: req.session.username
-    });
-};
-
 exports.createroom = function(req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
@@ -162,6 +147,39 @@ exports.createroom = function(req, res) {
         title: 'OldGame',
         url: req.url,
         page: 7,
+        login: req.session.login,
+        username: req.session.username
+    });
+}
+
+exports.createroom_post = function(req, res) {
+    if (req.session.login !== 'login') {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('jsnes', {
+        title: 'OldGame',
+        url: req.url,
+        page: 6,
+        login: req.session.login,
+        username: req.session.username,
+        roomname: req.roomname,
+        game : req.game,
+        playerCount : req.playerCount
+    });
+}
+
+exports.joinRoom = function(req, res) {
+    if (req.session.login !== 'login') {
+        res.redirect('/');
+        return;
+    }
+
+    res.render('jsnes', {
+        title: 'OldGame',
+        url: req.url,
+        page: 6,
         login: req.session.login,
         username: req.session.username
     });

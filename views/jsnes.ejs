@@ -1,6 +1,6 @@
 <% layout('layout') %>
 
-<div class="modal-content">
+<div>
     <div id="emulator"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="lib/jquery-2.1.3.min.js" type="text/javascript" charset="utf-8"></script>
@@ -50,9 +50,15 @@
         });
 
         var socket = io.connect();
-
+        var roomname = "<%= roomname %>";
+        var userid = "<%= username %>";
         socket.on('new', function () {
             socket.emit('newSend', 'webPage');
+            socket.emit('join', {'userid': userid, 'roomname': roomname});
+        });
+
+        socket.on('join', function (data) {
+            console.log(data);
         });
 
         socket.on('btn_1', function (msg) {
@@ -184,4 +190,8 @@
         });
 
     </script>
+</div>
+
+<div>
+    roomName : <%= roomname %>
 </div>

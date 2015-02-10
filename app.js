@@ -16,6 +16,7 @@ var favicon = require('serve-favicon');
 //Socket.IO
 var io = require('socket.io').listen(server);
 
+
 //비밀번호 암호화
 var crypto = require('crypto');
 var myHash = function myHash(key) {
@@ -51,9 +52,9 @@ app.get('/', routes.index);
 app.get('/SIGN_UP', routes.sign_up);
 app.get('/CHECKUSERNAME', routes.checkUserName);
 app.get('/LOGOUT', routes.logout);
-app.get('/JSNES', routes.jsnes);
 app.get('/gameroomlist', routes.gameroomlist);
 app.get('/CREATEROOM', routes.createroom);
+app.get('/JOIN_ROOM', routes.joinRoom);
 
 app.post('/SIGN_UP', function (req, res, next) {
     if (req.body.password == req.body.confirm_password) {
@@ -66,15 +67,22 @@ app.post('/SIGN_UP', function (req, res, next) {
     }
 }, routes.sign_up_post);
 
+app.post('/CREATE_ROOM', function (req, res, next) {
+    req.roomname = req.body.insert_name;
+    req.game = req.body.insert_game;
+    req.playerCount = req.body.insert_player;
+    next();
+}, routes.createroom_post);
+
 app.post('/LOGIN', function (req, res, next) {
     req.username = req.body.username;
     req.password = myHash(req.body.password);
     next();
 }, routes.login_post);
 
-app.post('/LOGINMOBILE', function (req, res, next){
+app.post('/LOGINMOBILE', function (req, res, next) {
     req.username = req.body.userId;
-    req.password =  myHash(req.body.password);
+    req.password = myHash(req.body.password);
     console.log(req.username);
     console.log(req.password);
     next();
@@ -93,7 +101,18 @@ function registerUser(socket, nickname) {
 }
 
 io.sockets.on('connection', function (socket) {
+    console.log('test', io.sockets.manager.rooms);
     socket.emit('new');
+
+    socket.on('join', function (data) {
+        socket.join(data.roomname);
+        console.log('test', io.sockets.manager.rooms);
+        socket.set('room', data.roomname);
+        socket.get('room', function (error, room) {
+            console.log(room);
+            io.sockets.in(room).emit('join', data.userid);
+        });
+    });
 
     socket.on('newSend', function (data) {
         registerUser(socket, data);
@@ -120,7 +139,7 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-    socket.on('pad', function(data, flag) {
+    socket.on('pad', function (data, flag) {
         socket.get('nickname', function (err, nickname) {
             var iValue = nickname.indexOf('0');
             var socket_id = socket_ids['webPage'];
@@ -134,10 +153,19 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
+        socket.get('room', function (error, room) {
+            socket.leave(room);
+            console.log('test', io.sockets.manager.rooms);
+        });
+
         socket.get('nickname', function (err, nickname) {
             if (nickname != undefined) {
                 delete socket_ids[nickname];
             }
         });
+    });
+
+    socket.on('test', function() {
+        console.log('test');
     });
 });

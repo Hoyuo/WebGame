@@ -6,7 +6,7 @@
     function RoomJoin() {
         var ret = confirm("방을 입장하시겠습니까?");
         if (ret === true) {
-            location.href = "/JSNES";
+            location.href = "/JOIN_ROOM";
         }
         return true;
     }
@@ -32,23 +32,6 @@
                 <th class="col-xs-1">1P/2P</th>
             </tr>
             </thead>
-            <% if(true){ %>
-            <tr onclick="RoomJoin()">
-                <td>
-                    우리 보글보글 해요
-                </td>
-                <td>
-                    1
-                </td>
-                <td>
-                    Bubble
-                </td>
-                <td>
-                    1P
-                </td>
-            </tr>
-            <% }else{ %>
-            <% } %>
             <% if(true){ %>
             <tr onclick="RoomJoin()">
                 <td>

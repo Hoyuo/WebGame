@@ -39,7 +39,7 @@ if (typeof jQuery !== 'undefined') {
                 /*
                  * Create UI
                  */
-                self.root = $('<div style="text-align: center;"></div>');
+                self.root = $('<div style="text-align : center; background-color: #000080"></div>');
                 self.screen = $('<canvas class="nes-screen" width="256" height="240"></canvas>').appendTo(self.root);
 
                 if (!self.screen[0].getContext) {

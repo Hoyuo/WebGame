@@ -1,4 +1,46 @@
 <% layout('layout') %>
 
-<div class="modal-content">
-</div>
+<script src="js/bootstrap-confirmation.js"></script>
+
+<form class="form-horizontal" method="post" action="/CREATE_ROOM">
+    <div class="form-group">
+        <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
+
+        <div class="col-xs-3">
+            <input type="text" class="form-control" name="insert_name" placeholder="insert ">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="insert-game" class="col-sm-3 control-label" style="color: #ffffff">Game</label>
+
+        <div class="col-xs-4">
+            <select class="form-control" id="insert_game" name="insert_game">
+                <option value="select">select</option>
+                <option value="bubble boggle">bubble boggle</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="insert-player" class="col-sm-3 control-label" style="color: #ffffff">1P / 2P</label>
+
+        <div class="col-xs-4">
+            <select class="form-control" id="insert_player" name="insert_player">
+                <option value="select">select</option>
+                <option value="1P">1P</option>
+                <option value="2P">2P</option>
+            </select>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">Create</button>
+        </div>
+    </div>
+</form>

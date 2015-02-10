@@ -12,8 +12,7 @@
     <style>
         body {
             padding: 50px 0px 0px 0px;
-            background-attachment: fixed;
-            background-color: #000080;
+            background: #000080 fixed;
             -webkit-font-smoothing: antialiased;
             font-family: emu;
         }
@@ -44,7 +43,7 @@
             <% if(login == 'login'){ %>
             <font color="white">Welcome, <%= username %>&nbsp&nbsp&nbsp&nbsp&nbsp</font>
             <a data-toggle="modal" href="/LOGOUT?url=<%= url %>" class="btn btn-primary navbar-btn btn-small"
-               style="height:30px; background-color: #000080" ;>Logout</a>
+               style="height:30px; background-color: #000080">Logout</a>
             <% }else{ %>
             <% } %>
         </ul>
@@ -53,7 +52,7 @@
     <div style="background: #000080">
         <div style="margin-top: 10px; padding-left: 100px; padding-right: 100px">
             <div style="width:100%; height:16px"></div>
-            <font style="text-align: center" ; size="4" ; color="white">Welcome to Old Game</font>
+            <font style="text-align: center" size="4" color="white">Welcome to Old Game</font>
 
             <div style="width:100%; height:16px"></div>
             <%- body %>
