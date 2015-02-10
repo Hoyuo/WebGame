@@ -6,9 +6,15 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "*",
-    "jade": "*",
-    "socket.io": "0.9.6",
-    "stylus": "*"
+    "body-parser": "~1.10.2",
+    "ejs": "~2.2.3",
+    "express": "~4.11.1",
+    "serve-favicon": "~2.2.0",
+    "bootstrap": "*",
+    "mongoose": "3.8",
+    "ejs-locals": "*",
+    "cookie-session": "*",
+    "express-method-override": "*",
+    "socket.io" : "0.9.6"
   }
 }
