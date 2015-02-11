@@ -42,7 +42,6 @@ exports.login_post = function (req, res) {
             req.session.username = req.username;
             res.status(200);
             res.redirect('/gameroomlist');
-            console.log('로그인 성공');
         }
         else {
             res.status(100);
@@ -70,11 +69,9 @@ exports.moblie_login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
         if (member != null) {
             res.json({status: 200, username: req.username});
-            console.log("성공");
         }
         else {
             res.json({status: 100, username: req.username});
-            console.log("실패");
         }
     });
 };
@@ -124,12 +121,10 @@ exports.sign_up_post = function (req, res) {
             if (err) return handleError(err);
 
             if (member == null) {
-                var myMember = new Member({username: curUsername, password: req.password});
+                var myMember = new Member({username: curUsername, password: req.password, uuid: 0});
                 myMember.save(function (err, data) {
                     if (err) {
-                        console.log("error");
                     }
-                    console.log('member is inserted');
                 });
                 res.redirect('/');
             }
@@ -193,12 +188,7 @@ exports.checkid = function (userId, uuid) {
     Member.findOne({username: userId}, function (err, member) {
         if (member != null) {
             Member.update({uuid: uuid}, function (err) {
-                console.log("데이터 저장됨");
             });
-            console.log("1 찾았다");
-        }
-        else {
-            console.log("해당하는 uuid값에 대한 정보가 없습니다.");
         }
     });
 };

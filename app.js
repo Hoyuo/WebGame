@@ -89,13 +89,14 @@ app.post('/LOGINMOBILE', function (req, res, next) {
 }, routes.moblie_login_post);
 
 var socket_ids = [];
-var count = 0;
 
 function registerUser(socket, nickname) {
     socket.get('nickname', function (err, pre_nick) {
-        if (pre_nick != undefined) delete socket_ids[pre_nick];
-        socket_ids[nickname] = socket.id;
-        socket.set('nickname', nickname, function () {
+        socket.get('room', function (error, room) {
+            if (pre_nick != undefined) delete socket_ids[pre_nick];
+            socket_ids[nickname] = {id: socket.id, nickname: nickname, roomname: room};
+            socket.set('nickname', nickname, function () {
+            });
         });
     });
 }
@@ -110,50 +111,60 @@ function getRoomlist(data) {
     return roomlist;
 }
 
+function getRoomSocketId(nickname) {
+    for (var socketid in socket_ids) {
+        if (socketid == nickname) {
+            return socket_ids[socketid];
+        }
+    }
+    return -1;
+}
+
 io.set('log level', 2);
+
 io.sockets.on('connection', function (socket) {
     socket.emit('new');
 
+    //방 입장
     socket.on('join', function (data) {
         socket.join(data.roomname);
         socket.set('room', data.roomname);
         socket.get('room', function (error, room) {
-            io.sockets.in(room).emit('join', data.userid);
         });
     });
 
-    socket.on('newSend', function (data) {
+    //웹 페이지 데이터값 받기
+    socket.on('webSingUp', function (data) {
         registerUser(socket, data);
     });
 
     socket.on('UUID', function (uuid, userid) {
-        console.log('입력', uuid, userid);
         routes.checkid(userid, uuid);
-        //registerUser(socket, nickname);
+        registerUser(socket, userid);
     });
 
-    socket.on('btn', function (userId, data) {
+    socket.on('btn', function (data) {
         socket.get('nickname', function (err, nickname) {
-            var iValue = nickname.indexOf('0');
-            var socket_id = socket_ids['webPage'];
-            if (socket_id != undefined) {
-                if (iValue != -1)
-                    io.sockets.socket(socket_id).emit('btn_1', data);
+            var room = getRoomSocketId(nickname + '_webPage');
+            var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+            if (room !== -1) {
+                if (playerlist[0] === room.id)//todo 수정
+                    io.sockets.in(room.room).emit('btn_1', data);
                 else
-                    io.sockets.socket(socket_id).emit('btn_2', data);
-            }// if
+                    io.sockets.in(room.room).emit('btn_2', data);
+            }
         });
     });
 
-    socket.on('pad', function (userId, data, flag) {
+    socket.on('pad', function (data, flag) {
         socket.get('nickname', function (err, nickname) {
-            var iValue = nickname.indexOf('0');
-            var socket_id = socket_ids['webPage'];
-            if (socket_id != undefined) {
-                if (iValue != -1)
-                    io.sockets.socket(socket_id).emit('pad_1', data, flag);
+            var room = getRoomSocketId(nickname + '_webPage');
+            var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+            if (room !== -1) {
+                if (playerlist[0] === room.id)//todo 수정
+                    io.sockets.in(room.room).emit('pad_1', data, flag);
                 else
-                    io.sockets.socket(socket_id).emit('pad_2', data, flag);
+                    io.sockets.in(room.room).emit('pad_2', data, flag);
             }// if
         });
     });
@@ -167,6 +178,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
         socket.get('room', function (error, room) {
+            io.sockets.in(room).emit('reStart');
             socket.leave(room);
         });
 

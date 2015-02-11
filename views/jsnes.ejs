@@ -58,12 +58,8 @@
         var userid = "<%= username %>";
 
         socket.on('new', function () {
-            socket.emit('newSend', 'webPage');
             socket.emit('join', {'userid': userid, 'roomname': roomname});
-        });
-
-        socket.on('join', function (data) {
-            console.log(data);
+            socket.emit('webSingUp', userid + '_webPage');
         });
 
         socket.on('btn_1', function (msg) {
@@ -193,6 +189,11 @@
                     break;
             }
         });
+
+        socket.on('reStart', function () {
+            nes.reloadRom();
+            nes.start();
+        })
 
     </script>
 </div>
