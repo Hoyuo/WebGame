@@ -1,5 +1,9 @@
 <% layout('layout') %>
 
+<div class="modal-content">
+    roomName : <%= roomname %>
+</div>
+
 <div>
     <div id="emulator"></div>
     <script src="/socket.io/socket.io.js"></script>
@@ -191,8 +195,4 @@
         });
 
     </script>
-</div>
-
-<div>
-    roomName : <%= roomname %>
 </div>

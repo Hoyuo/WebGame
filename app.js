@@ -23,7 +23,7 @@ var myHash = function myHash(key) {
     var hash = crypto.createHash('sha1');
     hash.update(key);
     return hash.digest('hex');
-}
+};
 
 //Create Session
 var createSession = function createSession() {
@@ -158,6 +158,13 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    socket.on('request_room_list', function () {
+        // 방 정보(방 이름, 채팅 참여 인원)
+        var roomlist = [];
+        roomlist = getRoomlist(io.sockets.manager.rooms);
+        socket.emit('roomlist', roomlist);
+    });
+
     socket.on('disconnect', function () {
         socket.get('room', function (error, room) {
             socket.leave(room);
@@ -170,10 +177,4 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-    socket.on('request_room_list', function () {
-        // 방 정보(방 이름, 채팅 참여 인원)
-        var roomlist = [];
-        var roomlist = getRoomlist(io.sockets.manager.rooms);
-        socket.emit('roomlist', roomlist);
-    });
 });

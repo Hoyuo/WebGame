@@ -137,7 +137,7 @@ exports.sign_up_post = function (req, res) {
     }
 };
 
-exports.createroom = function(req, res) {
+exports.createroom = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
         return;
@@ -152,7 +152,7 @@ exports.createroom = function(req, res) {
     });
 };
 
-exports.createroom_post = function(req, res) {
+exports.createroom_post = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
         return;
@@ -165,12 +165,12 @@ exports.createroom_post = function(req, res) {
         login: req.session.login,
         username: req.session.username,
         roomname: req.roomname,
-        game : req.game,
-        playerCount : req.playerCount
+        game: req.game,
+        playerCount: req.playerCount
     });
 };
 
-exports.joinRoom = function(req, res) {
+exports.joinRoom = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
         return;

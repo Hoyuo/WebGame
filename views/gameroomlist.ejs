@@ -1,9 +1,12 @@
 <% layout('layout') %>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="js/bootstrap-confirmation.js"></script>
 <script type="text/javascript">
-    function RoomJoin(data) {
+    function RoomJoin(data, count) {
+        if (count == 2) {
+            alert("방이 꽉 찾습니다");
+            return false;
+        }
         var ret = confirm("방을 입장하시겠습니까?");
         if (ret === true) {
             var oForm = document.createElement('form');
@@ -26,10 +29,12 @@
 
         socket.on('roomlist', function (data) {
             for (var i = 0; i < data.length; i++) {
-                var tag = "<tr onclick='RoomJoin(\"" + data[i].roomname + "\")'><td>" + data[i].roomname + '</td><td>' + (i + 1) + '</td><td>' + data[i].no_of_persons + '</td><td>' + '1P' + '</td>';
+                var tag = "<tr onclick='RoomJoin(\"" + data[i].roomname + "\"," + data[i].no_of_persons + ")'><td>" + data[i].roomname + '</td><td>' + (i + 1) + '</td><td>' + data[i].no_of_persons + '</td><td>' + '1P' + '</td>';
                 $(tag).appendTo('#gamelist');
             }
+            socket.disconnect();
         });
+
     });
 </script>
 
