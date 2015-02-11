@@ -82,6 +82,7 @@ app.post('/LOGIN', function (req, res, next) {
 }, routes.login_post);
 
 app.post('/LOGINMOBILE', function (req, res, next) {
+    console.log('모바일 접속');
     req.username = req.body.userId;
     req.password = myHash(req.body.password);
     next();
@@ -125,14 +126,13 @@ io.sockets.on('connection', function (socket) {
         registerUser(socket, data);
     });
 
-    socket.on('UUID', function (data) {
-        var nickname = 'player' + count;
-        count++;
-        count = count % 2;
-        registerUser(socket, nickname);
+    socket.on('UUID', function (uuid, userid) {
+        console.log('입력', uuid, userid);
+        routes.checkid(userid, uuid);
+        //registerUser(socket, nickname);
     });
 
-    socket.on('btn', function (data) {
+    socket.on('btn', function (userId, data) {
         socket.get('nickname', function (err, nickname) {
             var iValue = nickname.indexOf('0');
             var socket_id = socket_ids['webPage'];
@@ -145,7 +145,7 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-    socket.on('pad', function (data, flag) {
+    socket.on('pad', function (userId, data, flag) {
         socket.get('nickname', function (err, nickname) {
             var iValue = nickname.indexOf('0');
             var socket_id = socket_ids['webPage'];

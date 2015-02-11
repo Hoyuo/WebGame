@@ -11,7 +11,8 @@ var db = mongoose.connection;
 //creates DB schma for MongoDB
 var memberSchema = mongoose.Schema({
     username: 'string',
-    password: 'string'
+    password: 'string',
+    uuid: 'string'
 });
 
 //compiles our schema into model
@@ -35,7 +36,6 @@ exports.index = function (req, res) {
 };
 
 exports.login_post = function (req, res) {
-    res.status(200);
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
         if (member != null) {
             req.session.login = 'login';
@@ -45,7 +45,7 @@ exports.login_post = function (req, res) {
             console.log('로그인 성공');
         }
         else {
-            res.status(200);
+            res.status(100);
             res.redirect('/');
         }
     });
@@ -66,12 +66,15 @@ exports.gameroomlist = function (req, res) {
 };
 
 exports.moblie_login_post = function (req, res) {
+    res.status(200);
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
         if (member != null) {
             res.json({status: 200, username: req.username});
+            console.log("성공");
         }
         else {
             res.json({status: 100, username: req.username});
+            console.log("실패");
         }
     });
 };
@@ -123,7 +126,7 @@ exports.sign_up_post = function (req, res) {
             if (member == null) {
                 var myMember = new Member({username: curUsername, password: req.password});
                 myMember.save(function (err, data) {
-                    if (err) {// TODO handle the error
+                    if (err) {
                         console.log("error");
                     }
                     console.log('member is inserted');
@@ -183,5 +186,19 @@ exports.joinRoom = function (req, res) {
         login: req.session.login,
         username: req.session.username,
         roomname: req.body.roomname
+    });
+};
+
+exports.checkid = function (userId, uuid) {
+    Member.findOne({username: userId}, function (err, member) {
+        if (member != null) {
+            Member.update({uuid: uuid}, function (err) {
+                console.log("데이터 저장됨");
+            });
+            console.log("1 찾았다");
+        }
+        else {
+            console.log("해당하는 uuid값에 대한 정보가 없습니다.");
+        }
     });
 };
