@@ -54,7 +54,8 @@ app.get('/CHECKUSERNAME', routes.checkUserName);
 app.get('/LOGOUT', routes.logout);
 app.get('/gameroomlist', routes.gameroomlist);
 app.get('/CREATEROOM', routes.createroom);
-app.get('/JOIN_ROOM', routes.joinRoom);
+
+app.post('/JOIN_ROOM', routes.joinRoom);
 
 app.post('/SIGN_UP', function (req, res, next) {
     if (req.body.password == req.body.confirm_password) {
@@ -67,7 +68,7 @@ app.post('/SIGN_UP', function (req, res, next) {
     }
 }, routes.sign_up_post);
 
-app.post('/CREATE_ROOM', function (req, res, next) {
+app.post('/ROOM_ADMIN', function (req, res, next) {
     req.roomname = req.body.insert_name;
     req.game = req.body.insert_game;
     req.playerCount = req.body.insert_player;
@@ -107,6 +108,7 @@ function getRoomlist(data) {
     }
     return roomlist;
 }
+
 io.set('log level', 2);
 io.sockets.on('connection', function (socket) {
     socket.emit('new');

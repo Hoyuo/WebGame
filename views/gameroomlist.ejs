@@ -6,9 +6,16 @@
     function RoomJoin(data) {
         var ret = confirm("방을 입장하시겠습니까?");
         if (ret === true) {
-            $().redirect("/JOIN_ROOM");
+            var oForm = document.createElement('form');
+            oForm.method = "post";
+            oForm.action = "/JOIN_ROOM";
+            var objs = document.createElement("input");
+            objs.setAttribute('type', 'hidden');
+            objs.setAttribute('name', 'roomname');
+            objs.setAttribute('value', data);
+            oForm.appendChild(objs);
+            oForm.submit();
         }
-        return true;
     }
     function CreateRoom() {
         location.href = "/CREATEROOM";

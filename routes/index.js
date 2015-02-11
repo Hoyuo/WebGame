@@ -63,7 +63,7 @@ exports.gameroomlist = function (req, res) {
         username: req.session.username,
         url: req.url
     });
-}
+};
 
 exports.moblie_login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
@@ -108,7 +108,7 @@ exports.checkUserName = function (req, res) {
             res.end('false');
         }
     });
-}
+};
 
 exports.sign_up_post = function (req, res) {
     res.status(200);
@@ -150,7 +150,7 @@ exports.createroom = function(req, res) {
         login: req.session.login,
         username: req.session.username
     });
-}
+};
 
 exports.createroom_post = function(req, res) {
     if (req.session.login !== 'login') {
@@ -168,20 +168,20 @@ exports.createroom_post = function(req, res) {
         game : req.game,
         playerCount : req.playerCount
     });
-}
+};
 
 exports.joinRoom = function(req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
         return;
     }
-    console.log(req.roomname);
+
     res.render('jsnes', {
         title: 'OldGame',
         url: req.url,
-        page: 6,
+        page: 7,
         login: req.session.login,
         username: req.session.username,
-        roomname: req.roomname
+        roomname: req.body.roomname
     });
-}
+};
