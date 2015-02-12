@@ -6,12 +6,12 @@
 <script type="text/javascript">
     function RoomJoin(roomname, game, playerCount, limitCount) {
         if (playerCount + 1 > limitCount) {
-            alertify.alert('인원 초과 입니다', function () {
+            alertify.alert('The room is full', function () {
                 //after clicking OK
             });
             return false;
         }
-        alertify.confirm("방을 입장하시겠습니까?", function (e) {
+        alertify.confirm('Are you sure you want to enter the room?', function (e) {
             if (e) {
                 var oForm = document.createElement('form');
                 oForm.method = "post";
