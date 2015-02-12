@@ -115,6 +115,6 @@ JSNES.Keyboard.prototype = {
     },
 
     keyPress: function (evt) {
-        evt.preventDefault();
+        //evt.preventDefault();
     }
 };

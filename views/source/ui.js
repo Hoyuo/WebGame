@@ -235,7 +235,8 @@ if (typeof jQuery !== 'undefined') {
                     var data = this.screen[0].toDataURL("image/png"),
                         img = new Image();
                     img.src = data;
-                    return img;
+                    //return img;
+                    return data;
                 },
 
                 /*

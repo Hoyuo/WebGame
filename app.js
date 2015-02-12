@@ -61,6 +61,7 @@ app.post('/JOIN_ROOM', function (req, res, next) {
     req.roomname = req.body.roomname;
     req.game = req.body.game;
     req.playerCount = req.body.playerCount;
+    req.peer_1p_id = roominfo[req.roomname].peer_id;
     next();
 }, routes.joinRoom);
 
@@ -80,7 +81,7 @@ app.post('/ROOM_ADMIN', function (req, res, next) {
     req.game = req.body.insert_game;
     req.playerCount = req.body.insert_player;
 
-    roominfo[req.roomname] = {game: req.game, playerCount: req.playerCount};
+    roominfo[req.roomname] = {game: req.game, playerCount: req.playerCount, peer_id: 0};
     next();
 }, routes.createroom_post);
 
@@ -148,7 +149,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     //웹 페이지 데이터값 받기
-    socket.on('webSingUp', function (data, roomInfo) {
+    socket.on('webSingUp', function (data) {
         registerUser(socket, data);
     });
 
@@ -172,10 +173,37 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    socket.on('btn_web', function (data) {
+        socket.get('nickname', function (err, nickname) {
+            var room = getRoomSocketId(nickname);
+            var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+
+            if (room !== -1) {
+                if (playerlist[0] === room.id)//todo 수정
+                    io.sockets.in(room.room).emit('btn_1', data);
+                else
+                    io.sockets.in(room.room).emit('btn_2', data);
+            }
+        });
+    });
+
     //방향키 입력 처리
     socket.on('pad', function (data, flag) {
         socket.get('nickname', function (err, nickname) {
             var room = getRoomSocketId(nickname + '_webPage');
+            var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+            if (room !== -1) {
+                if (playerlist[0] === room.id)//todo 수정
+                    io.sockets.in(room.room).emit('pad_1', data, flag);
+                else
+                    io.sockets.in(room.room).emit('pad_2', data, flag);
+            }// if
+        });
+    });
+
+    socket.on('pad_web', function (data, flag) {
+        socket.get('nickname', function (err, nickname) {
+            var room = getRoomSocketId(nickname);
             var playerlist = io.sockets.manager.rooms["/" + room.roomname];
             if (room !== -1) {
                 if (playerlist[0] === room.id)//todo 수정
@@ -195,18 +223,26 @@ io.sockets.on('connection', function (socket) {
 
     //연결 해제
     socket.on('disconnect', function () {
-        //방 정보 해제
-        socket.get('room', function (error, room) {
-            io.sockets.in(room).emit('reStart');
-            socket.leave(room);
-        });
+
 
         //닉네임 등록 해제
         socket.get('nickname', function (err, nickname) {
+            //방 정보 해제
             if (nickname != undefined) {
+                if (nickname.indexOf('_webPage') != -1) {
+                    socket.get('room', function (error, room) {
+                        io.sockets.in(room).emit('reStart');
+                        socket.leave(room);
+                    });
+                }
                 delete socket_ids[nickname];
             }
         });
     });
 
+    socket.on('save_1p_peer_id', function (data) {
+        socket.get('room', function (error, room) {
+            roominfo[room].peer_id = data.peer_1p_id;
+        });
+    });
 });

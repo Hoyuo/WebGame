@@ -1,5 +1,9 @@
 <% layout('layout') %>
 
+<script src="js/alertify.min.js"></script>
+<link rel="stylesheet" href="stylesheets/alertify.core.css"/>
+<link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
+
 <ul class="breadcrumb" style="background-color: #FFFFFF">
     <br/>
 
@@ -37,19 +41,24 @@
         var username = $('#user').val();
 
         if (username == '') {
-            alert("Please enter Email");
+            alertify.alert('Please enter Email', function () {
+                //after clicking OK
+            });
         }
         else {
             $.get('/CHECKUSERNAME?id=' + username, function (data, err) {
                 if (data == 'true') {
                     $('#user').val('');
-                    alert('Username already exists. Please enter another Email');
+                    alertify.alert('Username already exists. Please enter another Email', function () {
+                        //after clicking OK
+                    });
                 }
                 else {
-                    alert('You can use this Email');
+                    alertify.alert('You can use this Email', function () {
+                        //after clicking OK
+                    });
                 }
             });
         }
     }
-    ;
 </script>

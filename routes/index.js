@@ -174,7 +174,7 @@ exports.joinRoom = function (req, res) {
         return;
     }
 
-    res.render('jsnes', {
+    res.render('joinroom', {
         title: 'OldGame',
         url: req.url,
         page: 7,
@@ -182,7 +182,8 @@ exports.joinRoom = function (req, res) {
         username: req.session.username,
         roomname: req.roomname,
         game: req.game,
-        playerCount: req.playerCount
+        playerCount: req.playerCount,
+        peer_1p_id: req.peer_1p_id
     });
 };
 
