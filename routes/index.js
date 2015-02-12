@@ -180,7 +180,9 @@ exports.joinRoom = function (req, res) {
         page: 7,
         login: req.session.login,
         username: req.session.username,
-        roomname: req.body.roomname
+        roomname: req.roomname,
+        game: req.game,
+        playerCount: req.playerCount
     });
 };
 

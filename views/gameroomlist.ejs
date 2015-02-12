@@ -2,8 +2,8 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
-    function RoomJoin(data, count) {
-        if (count == 2) {
+    function RoomJoin(roomname, game, playerCount, limitCount) {
+        if (playerCount + 1 > limitCount) {
             alert("방이 꽉 찾습니다");
             return false;
         }
@@ -15,8 +15,18 @@
             var objs = document.createElement("input");
             objs.setAttribute('type', 'hidden');
             objs.setAttribute('name', 'roomname');
-            objs.setAttribute('value', data);
+            objs.setAttribute('value', roomname);
             oForm.appendChild(objs);
+            var objs1 = document.createElement("input");
+            objs1.setAttribute('type', 'hidden');
+            objs1.setAttribute('name', 'game');
+            objs1.setAttribute('value', game);
+            oForm.appendChild(objs1);
+            var objs2 = document.createElement("input");
+            objs2.setAttribute('type', 'hidden');
+            objs2.setAttribute('name', 'playerCount');
+            objs2.setAttribute('value', playerCount);
+            oForm.appendChild(objs2);
             oForm.submit();
         }
     }
@@ -29,7 +39,17 @@
 
         socket.on('roomlist', function (data) {
             for (var i = 0; i < data.length; i++) {
-                var tag = "<tr onclick='RoomJoin(\"" + data[i].roomname + "\"," + data[i].no_of_persons + ")'><td>" + data[i].roomname + '</td><td>' + (i + 1) + '</td><td>' + data[i].no_of_persons + '</td><td>' + '1P' + '</td>';
+                var tag =
+                        "<tr onclick='RoomJoin(\"" +
+                        data[i].roomname + "\", \"" +
+                        data[i].game + "\"," +
+                        data[i].no_of_persons + "," +
+                        data[i].playerCount +
+                        ")'>" +
+                        '<td>' + data[i].roomname + '</td>' +
+                        '<td>' + (i + 1) + '</td>' +
+                        '<td>' + data[i].game + '</td>' +
+                        '<td>' + data[i].playerCount + 'P' + '</td></tr>';
                 $(tag).appendTo('#gamelist');
             }
             socket.disconnect();

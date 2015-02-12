@@ -45,8 +45,10 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(require('express-method-override')('method_override_param_name'));
 app.use(session({secret: 'secret key'}));
 app.use(express.static(path.join(__dirname, '/views')));
-
 app.engine('ejs', engine);
+
+//roominfo
+var roominfo = [];
 
 app.get('/', routes.index);
 app.get('/SIGN_UP', routes.sign_up);
@@ -55,7 +57,12 @@ app.get('/LOGOUT', routes.logout);
 app.get('/gameroomlist', routes.gameroomlist);
 app.get('/CREATEROOM', routes.createroom);
 
-app.post('/JOIN_ROOM', routes.joinRoom);
+app.post('/JOIN_ROOM', function (req, res, next) {
+    req.roomname = req.body.roomname;
+    req.game = req.body.game;
+    req.playerCount = req.body.playerCount;
+    next();
+}, routes.joinRoom);
 
 app.post('/SIGN_UP', function (req, res, next) {
     if (req.body.password == req.body.confirm_password) {
@@ -72,6 +79,8 @@ app.post('/ROOM_ADMIN', function (req, res, next) {
     req.roomname = req.body.insert_name;
     req.game = req.body.insert_game;
     req.playerCount = req.body.insert_player;
+
+    roominfo[req.roomname] = {game: req.game, playerCount: req.playerCount};
     next();
 }, routes.createroom_post);
 
@@ -105,7 +114,12 @@ function getRoomlist(data) {
     var roomlist = [];
     for (var key in data) {
         if (key.indexOf("/") > -1) {
-            roomlist.push({"roomname": key.split("/").join(""), no_of_persons: data[key].length});
+            roomlist.push({
+                roomname: key.split("/").join(""),
+                no_of_persons: data[key].length,
+                game: roominfo[key.split("/").join("")].game,
+                playerCount: roominfo[key.split("/").join("")].playerCount
+            });
         }
     }
     return roomlist;
@@ -134,15 +148,17 @@ io.sockets.on('connection', function (socket) {
     });
 
     //웹 페이지 데이터값 받기
-    socket.on('webSingUp', function (data) {
+    socket.on('webSingUp', function (data, roomInfo) {
         registerUser(socket, data);
     });
 
+    //폰 등록
     socket.on('UUID', function (uuid, userid) {
         routes.checkid(userid, uuid);
         registerUser(socket, userid);
     });
 
+    //버튼 입력 처리
     socket.on('btn', function (data) {
         socket.get('nickname', function (err, nickname) {
             var room = getRoomSocketId(nickname + '_webPage');
@@ -156,6 +172,7 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    //방향키 입력 처리
     socket.on('pad', function (data, flag) {
         socket.get('nickname', function (err, nickname) {
             var room = getRoomSocketId(nickname + '_webPage');
@@ -169,19 +186,22 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    //방 목록 요청 : 방 정보(방 이름, 채팅 참여 인원)
     socket.on('request_room_list', function () {
-        // 방 정보(방 이름, 채팅 참여 인원)
         var roomlist = [];
         roomlist = getRoomlist(io.sockets.manager.rooms);
         socket.emit('roomlist', roomlist);
     });
 
+    //연결 해제
     socket.on('disconnect', function () {
+        //방 정보 해제
         socket.get('room', function (error, room) {
             io.sockets.in(room).emit('reStart');
             socket.leave(room);
         });
 
+        //닉네임 등록 해제
         socket.get('nickname', function (err, nickname) {
             if (nickname != undefined) {
                 delete socket_ids[nickname];
