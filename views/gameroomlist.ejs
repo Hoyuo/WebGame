@@ -1,35 +1,66 @@
 <% layout('layout') %>
-
+<script src="js/alertify.min.js"></script>
+<link rel="stylesheet" href="stylesheets/alertify.core.css"/>
+<link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
     function RoomJoin(roomname, game, playerCount, limitCount) {
         if (playerCount + 1 > limitCount) {
-            alert("방이 꽉 찾습니다");
+            alertify.alert('인원 초과 입니다', function () {
+                //after clicking OK
+            });
             return false;
         }
-        var ret = confirm("방을 입장하시겠습니까?");
-        if (ret === true) {
-            var oForm = document.createElement('form');
-            oForm.method = "post";
-            oForm.action = "/JOIN_ROOM";
-            var objs = document.createElement("input");
-            objs.setAttribute('type', 'hidden');
-            objs.setAttribute('name', 'roomname');
-            objs.setAttribute('value', roomname);
-            oForm.appendChild(objs);
-            var objs1 = document.createElement("input");
-            objs1.setAttribute('type', 'hidden');
-            objs1.setAttribute('name', 'game');
-            objs1.setAttribute('value', game);
-            oForm.appendChild(objs1);
-            var objs2 = document.createElement("input");
-            objs2.setAttribute('type', 'hidden');
-            objs2.setAttribute('name', 'playerCount');
-            objs2.setAttribute('value', playerCount);
-            oForm.appendChild(objs2);
-            oForm.submit();
-        }
+        alertify.confirm("방을 입장하시겠습니까?", function (e) {
+            if (e) {
+                var oForm = document.createElement('form');
+                oForm.method = "post";
+                oForm.action = "/JOIN_ROOM";
+                var objs = document.createElement("input");
+                objs.setAttribute('type', 'hidden');
+                objs.setAttribute('name', 'roomname');
+                objs.setAttribute('value', roomname);
+                oForm.appendChild(objs);
+                var objs1 = document.createElement("input");
+                objs1.setAttribute('type', 'hidden');
+                objs1.setAttribute('name', 'game');
+                objs1.setAttribute('value', game);
+                oForm.appendChild(objs1);
+                var objs2 = document.createElement("input");
+                objs2.setAttribute('type', 'hidden');
+                objs2.setAttribute('name', 'playerCount');
+                objs2.setAttribute('value', playerCount);
+                oForm.appendChild(objs2);
+                oForm.submit();
+            } else {
+                //after clicking Cancel
+            }
+        });
     }
+
+    function customConfirm(customMessage) {
+        var dfd = new jQuery.Deferred();
+        $("#popUp").html(customMessage);
+        $("#popUp").dialog({
+            resizable: false,
+            height: 240,
+            modal: true,
+            buttons: {
+                "OK": function () {
+                    $(this).dialog("close");
+                    alert(true);
+                    dfd.resolve(true);
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                    alert(false);
+                    dfd.resolve(false);
+                }
+            }
+        });
+        return dfd.promise();
+    }
+
     function CreateRoom() {
         location.href = "/CREATEROOM";
     }
@@ -78,5 +109,4 @@
             </thead>
         </table>
     </div>
-
 </div>
