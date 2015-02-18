@@ -135,10 +135,10 @@ function getRoomSocketId(nickname) {
 }
 
 io.set('transports', [
-    'websocket'
+    'xhr-polling'
+    , 'websocket'
     , 'flashsocket'
     , 'htmlfile'
-    , 'xhr-polling'
     , 'jsonp-polling'
 ]);
 io.set('log level', 2);
