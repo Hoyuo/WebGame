@@ -134,6 +134,13 @@ function getRoomSocketId(nickname) {
     return -1;
 }
 
+io.set('transports', [
+    'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+]);
 io.set('log level', 2);
 
 io.sockets.on('connection', function (socket) {
