@@ -24,7 +24,7 @@
     <script src="source/ui.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
-        var socket = io.connect();
+        var socket = io.connect('http://localhost');
         var peer;
 
         window.turnserversDotComAPI.iceServers(function (data) {
