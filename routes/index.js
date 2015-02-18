@@ -157,7 +157,7 @@ exports.createroom_post = function (req, res) {
         res.redirect('/');
         return;
     }
-
+    console.log(req.roomname);
     if(req.roomname === '' ) {
         res.redirect('/GAMEROOMLIST');
         return;
