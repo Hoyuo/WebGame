@@ -22,10 +22,12 @@ var Member = mongoose.model('Member', memberSchema);
 // Main (page: 0)
 exports.index = function (req, res) {
     if (req.session.login === 'login') {
-        res.redirect('/gameroomlist');
+        res.redirect('/GAMEROOMLIST');
         return;
     }
+
     res.status(200);
+
     res.render('index', {
         title: 'OldGame',
         page: 0,
@@ -41,7 +43,7 @@ exports.login_post = function (req, res) {
             req.session.login = 'login';
             req.session.username = req.username;
             res.status(200);
-            res.redirect('/gameroomlist');
+            res.redirect('/GAMEROOMLIST');
         }
         else {
             res.status(100);
@@ -50,7 +52,7 @@ exports.login_post = function (req, res) {
     });
 };
 
-exports.gameroomlist = function (req, res) {
+exports.GAMEROOMLIST = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
         return;
@@ -65,12 +67,13 @@ exports.gameroomlist = function (req, res) {
 };
 
 exports.moblie_login_post = function (req, res) {
-    res.status(200);
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
         if (member != null) {
+            res.status(200);
             res.json({status: 200, username: req.username});
         }
         else {
+            res.status(100);
             res.json({status: 100, username: req.username});
         }
     });
@@ -94,7 +97,6 @@ exports.sign_up = function (req, res) {
         username: req.session.username,
         existingUsername: 'null'
     });
-
 };
 
 exports.checkUserName = function (req, res) {
@@ -153,6 +155,11 @@ exports.createroom = function (req, res) {
 exports.createroom_post = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
+        return;
+    }
+
+    if(req.roomname === '' ) {
+        res.redirect('/GAMEROOMLIST');
         return;
     }
 

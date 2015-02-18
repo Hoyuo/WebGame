@@ -16,7 +16,6 @@ var favicon = require('serve-favicon');
 //Socket.IO
 var io = require('socket.io').listen(server);
 
-
 //비밀번호 암호화
 var crypto = require('crypto');
 var myHash = function myHash(key) {
@@ -54,7 +53,7 @@ app.get('/', routes.index);
 app.get('/SIGN_UP', routes.sign_up);
 app.get('/CHECKUSERNAME', routes.checkUserName);
 app.get('/LOGOUT', routes.logout);
-app.get('/gameroomlist', routes.gameroomlist);
+app.get('/GAMEROOMLIST', routes.GAMEROOMLIST);
 app.get('/CREATEROOM', routes.createroom);
 
 app.post('/JOIN_ROOM', function (req, res, next) {
@@ -164,6 +163,7 @@ io.sockets.on('connection', function (socket) {
         socket.get('nickname', function (err, nickname) {
             var room = getRoomSocketId(nickname + '_webPage');
             var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+
             if (room !== -1) {
                 if (playerlist[0] === room.id)//todo 수정
                     io.sockets.in(room.room).emit('btn_1', data);
@@ -191,8 +191,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('pad', function (data, flag) {
         socket.get('nickname', function (err, nickname) {
             var room = getRoomSocketId(nickname + '_webPage');
-            var playerlist = io.sockets.manager.rooms["/" + room.roomname];
             if (room !== -1) {
+                var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+
                 if (playerlist[0] === room.id)//todo 수정
                     io.sockets.in(room.room).emit('pad_1', data, flag);
                 else
@@ -204,8 +205,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('pad_web', function (data, flag) {
         socket.get('nickname', function (err, nickname) {
             var room = getRoomSocketId(nickname);
-            var playerlist = io.sockets.manager.rooms["/" + room.roomname];
             if (room !== -1) {
+                var playerlist = io.sockets.manager.rooms["/" + room.roomname];
+
                 if (playerlist[0] === room.id)//todo 수정
                     io.sockets.in(room.room).emit('pad_1', data, flag);
                 else
@@ -223,7 +225,6 @@ io.sockets.on('connection', function (socket) {
 
     //연결 해제
     socket.on('disconnect', function () {
-
 
         //닉네임 등록 해제
         socket.get('nickname', function (err, nickname) {
