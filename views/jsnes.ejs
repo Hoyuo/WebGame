@@ -5,7 +5,9 @@
 </div>
 
 <div>
+    <br/>
     <div id="emulator"></div>
+    <br/>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/peer.js" type="text/javascript" charset="utf-8"></script>
     <script src="//api.turnservers.com/api.js?key=ajeuRdpXfHWQcBPQaVfQnGUqKXkuttpK"></script>
@@ -24,7 +26,7 @@
     <script src="source/ui.js" type="text/javascript" charset="utf-8"></script>
 
     <script type="text/javascript" charset="utf-8">
-        var socket = io.connect('http://localhost');
+        var socket = io.connect();
         var peer;
 
         window.turnserversDotComAPI.iceServers(function (data) {
@@ -57,21 +59,54 @@
         });
 
         var nes;
-        $(function () {
-            nes = new JSNES({
-                'ui': $('#emulator').JSNESUI({
-                    "Working": [
-                        ['Bubble Bobble', 'roms/Bubble Bobble (U).nes'],
-                        ['Contra', 'roms/Contra (U) [!].nes']
-                    ]
-                })
-            });
-        });
-
         var roomname = "<%= roomname %>";
         var userid = "<%= username %>";
         var game = "<%= game %>";
         var playerCount = "<%= playerCount %>"
+
+        $(function () {
+            nes = new JSNES({
+                'ui': $('#emulator').JSNESUI({
+                    "Homebrew": [
+                        ['Concentration Room', 'roms/croom.nes'],
+                        ['LJ65', 'roms/lj65.nes']
+                    ],
+                    "Working": [
+                        ['Bubble Bobble', 'roms/Bubble Bobble.nes'],
+                        ['Contra', 'roms/Contra.nes'],
+                        ['Donkey Kong', 'roms/Donkey Kong.nes'],
+                        ['Dr. Mario', 'roms/Dr. Mario.nes'],
+                        ['Golf', 'roms/Golf.nes'],
+                        ['The Legend of Zelda', 'roms/Legend of Zelda.nes'],
+                        ['Lemmings', 'roms/Lemmings.nes'],
+                        ['Lifeforce', 'roms/Lifeforce.nes'],
+                        ['Mario Bros.', 'roms/Mario Bros.nes'],
+                        ['Mega Man', 'roms/Mega Man.nes'],
+                        ['Pac-Man', 'roms/Pac-Man.nes'],
+                        ['Super Mario Bros.', 'roms/Super Mario Bros.nes'],
+                        ['Tennis', 'roms/Tennis.nes'],
+                        ['Tetris', 'roms/Tetris.nes'],
+                        ['Tetris 2', 'roms/Tetris 2.nes'],
+                        ['Zelda II - The Adventure of Link', 'roms/Zelda 2.nes']
+                    ],
+
+                    "Nearly Working": [
+                        ['Super Mario Bros. 3', 'roms/Super Mario Bros3.nes']
+                    ]
+                })
+            });
+
+            $('#game_select option[value="' + game + '"]').attr('selected', 'selected').change();
+
+            $('#game_select').hide();
+
+            $('.nes-enablesound').click();
+            $('.nes-zoom').click();
+
+            $('.nes-enablesound').hide();
+            $('.nes-pause').hide();
+            $('.nes-zoom').hide();
+        });
 
         socket.on('new', function () {
             socket.emit('join', {'roomname': roomname});

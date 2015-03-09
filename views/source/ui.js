@@ -48,9 +48,9 @@ if (typeof jQuery !== 'undefined') {
                 }
 
                 self.romContainer = $('<div class="nes-roms"></div>').appendTo(self.root);
-                self.romSelect = $('<select></select>').appendTo(self.romContainer);
+                self.romSelect = $('<select id="game_select"></select>').appendTo(self.romContainer);
 
-                self.controls = $('<div class="nes-controls"></div>').appendTo(self.root);
+                self.controls = $('<br/><div class="nes-controls"></div><br/>').appendTo(self.root);
                 self.buttons = {
                     pause: $('<input type="button" value="pause" class="nes-pause" disabled="disabled">').appendTo(self.controls),
                     restart: $('<input type="button" value="restart" class="nes-restart" disabled="disabled">').appendTo(self.controls),
@@ -99,6 +99,7 @@ if (typeof jQuery !== 'undefined') {
                 });
 
                 self.zoomed = false;
+
                 self.buttons.zoom.click(function () {
                     if (self.zoomed) {
                         self.screen.animate({
