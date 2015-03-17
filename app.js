@@ -46,24 +46,11 @@ app.use(session({secret: 'secret key'}));
 app.use(express.static(path.join(__dirname, '/views')));
 app.engine('ejs', engine);
 
-//roominfo
-var roominfo = [];
-
+//처음 접속
 app.get('/', routes.index);
+//회원가입페이지이동
 app.get('/SIGN_UP', routes.sign_up);
-app.get('/CHECKUSERNAME', routes.checkUserName);
-app.get('/LOGOUT', routes.logout);
-app.get('/GAMEROOMLIST', routes.GAMEROOMLIST);
-app.get('/CREATEROOM', routes.createroom);
-
-app.post('/JOIN_ROOM', function (req, res, next) {
-    req.roomname = req.body.roomname;
-    req.game = req.body.game;
-    req.playerCount = req.body.playerCount;
-    req.peer_1p_id = roominfo[req.roomname].peer_id;
-    next();
-}, routes.joinRoom);
-
+//회원가입
 app.post('/SIGN_UP', function (req, res, next) {
     if (req.body.password == req.body.confirm_password) {
         req.username = req.body.username;
@@ -74,7 +61,46 @@ app.post('/SIGN_UP', function (req, res, next) {
         res.redirect('/SIGN_UP');
     }
 }, routes.sign_up_post);
-
+//중복아이디확인
+app.get('/CHECKUSERNAME', routes.checkUserName);
+//로그인처리
+app.post('/LOGIN', function (req, res, next) {
+    req.username = req.body.username;
+    req.password = myHash(req.body.password);
+    next();
+}, routes.login_post);
+//모바일로그인
+app.post('/LOGINMOBILE', function (req, res, next) {
+    console.log('모바일 접속');
+    req.username = req.body.userId;
+    req.password = myHash(req.body.password);
+    next();
+}, routes.moblie_login_post);
+//로그아웃
+app.get('/LOGOUT', routes.logout);
+//게임방화면(로비)
+app.get('/GAMEROOMLIST', routes.GAMEROOMLIST);
+//방만들기
+app.get('/CREATEROOM', routes.createroom);
+//중복방확인
+app.get('/CHECKROOMNAME', function(req, res) {
+    var uri = url.parse(req.url, true);
+    var roomname = uri.query.id;
+    if(roominfo[roomname] === undefined) {
+        req.ret = true;
+    } else {
+        req.ret = false;
+    }
+}, routes.checkRoomName);
+//방참여 todo 이쪽부분에서 애러 발생하니 다시한번 확인
+app.post('/JOIN_ROOM', function (req, res, next) {
+    req.roomname = req.body.roomname;
+    req.game = req.body.game;
+    req.playerCount = req.body.playerCount;
+    req.peer_1p_id = roominfo[req.roomname].peer_id;
+    next();
+}, routes.joinRoom);
+//1P페이지이동
 app.post('/ROOM_ADMIN', function (req, res, next) {
     req.roomname = req.body.insert_name;
     req.game = req.body.insert_game;
@@ -84,20 +110,10 @@ app.post('/ROOM_ADMIN', function (req, res, next) {
     next();
 }, routes.createroom_post);
 
-app.post('/LOGIN', function (req, res, next) {
-    req.username = req.body.username;
-    req.password = myHash(req.body.password);
-    next();
-}, routes.login_post);
-
-app.post('/LOGINMOBILE', function (req, res, next) {
-    console.log('모바일 접속');
-    req.username = req.body.userId;
-    req.password = myHash(req.body.password);
-    next();
-}, routes.moblie_login_post);
-
+//소켓담당부분
 var socket_ids = [];
+//roominfo
+var roominfo = [];
 
 function registerUser(socket, nickname) {
     socket.get('nickname', function (err, pre_nick) {
@@ -116,7 +132,6 @@ function getRoomlist(data) {
         if (key.indexOf("/") > -1) {
             roomlist.push({
                 roomname: key.split("/").join(""),
-                no_of_persons: data[key].length,
                 game: roominfo[key.split("/").join("")].game,
                 playerCount: roominfo[key.split("/").join("")].playerCount
             });
@@ -124,6 +139,8 @@ function getRoomlist(data) {
     }
     return roomlist;
 }
+
+//no_of_persons: data[key].length
 
 function getRoomSocketId(nickname) {
     for (var socketid in socket_ids) {
@@ -134,13 +151,6 @@ function getRoomSocketId(nickname) {
     return -1;
 }
 
-io.set('transports', [
-    'xhr-polling'
-    , 'websocket'
-    , 'flashsocket'
-    , 'htmlfile'
-    , 'jsonp-polling'
-]);
 io.set('log level', 2);
 
 io.sockets.on('connection', function (socket) {

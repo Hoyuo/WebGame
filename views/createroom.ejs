@@ -1,12 +1,18 @@
 <% layout('layout') %>
 
+<script src="js/alertify.min.js"></script>
+<link rel="stylesheet" href="stylesheets/alertify.core.css"/>
+<link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
+
 <form class="form-horizontal" method="post" action="/ROOM_ADMIN">
     <div class="form-group">
         <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
 
         <div class="col-xs-3">
-            <input type="text" class="form-control" name="insert_name" placeholder="insert ">
+            <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert ">
         </div>
+        <a onclick="checkRoomName()" style="width:100%; color : #FFF; background-color: #000080"
+           class="btn btn-default">Check User Name</a>
     </div>
 
     <div class="form-group">
@@ -24,7 +30,6 @@
             </select>
         </div>
     </div>
-
 
     <div class="form-group">
         <label for="insert-player" class="col-sm-3 control-label" style="color: #ffffff">1P / 2P</label>
@@ -47,3 +52,30 @@
         </div>
     </div>
 </form>
+
+<script>
+    function checkRoomName() {
+        var roomname = $('#roomname').val();
+
+        if (roomname == '') {
+            alertify.alert('Please enter RoomName', function () {
+                //after clicking OK
+            });
+        }
+        else {
+            $.get('/CHECKROOMNAME?id=' + roomname, function (data, err) {
+                if (data == 'true') {
+                    $('#user').val('');
+                    alertify.alert('Username already exists. Please enter another Email', function () {
+                        //after clicking OK
+                    });
+                }
+                else {
+                    alertify.alert('You can use this RoomName', function () {
+                        //after clicking OK
+                    });
+                }
+            });
+        }
+    }
+</script>

@@ -92,7 +92,7 @@ exports.sign_up = function (req, res) {
     res.render('sign_up', {
         title: 'Sign up',
         url: req.url,
-        page: 5,
+        page: 1,
         login: req.session.login,
         username: req.session.username,
         existingUsername: 'null'
@@ -111,6 +111,11 @@ exports.checkUserName = function (req, res) {
         }
     });
 };
+
+exports.checkRoomName = function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end(req.ret);
+}
 
 exports.sign_up_post = function (req, res) {
     res.status(200);
@@ -146,7 +151,7 @@ exports.createroom = function (req, res) {
     res.render('createroom', {
         title: 'OldGame',
         url: req.url,
-        page: 7,
+        page: 2,
         login: req.session.login,
         username: req.session.username
     });
@@ -166,7 +171,7 @@ exports.createroom_post = function (req, res) {
     res.render('jsnes', {
         title: 'OldGame',
         url: req.url,
-        page: 6,
+        page: 3,
         login: req.session.login,
         username: req.session.username,
         roomname: req.roomname,
@@ -184,7 +189,7 @@ exports.joinRoom = function (req, res) {
     res.render('joinroom', {
         title: 'OldGame',
         url: req.url,
-        page: 7,
+        page: 4,
         login: req.session.login,
         username: req.session.username,
         roomname: req.roomname,

@@ -4,7 +4,8 @@
 <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
-    function RoomJoin(roomname, game, playerCount, limitCount) {
+    function RoomJoin(roomname, game, playerCount) {
+        //todo 다른 방식으로 처리 하기 바람
         if (playerCount + 1 > limitCount) {
             alertify.alert('The room is full', function () {
                 //after clicking OK
@@ -51,7 +52,7 @@
                     alert(true);
                     dfd.resolve(true);
                 },
-                Cancel: function () {
+                "Cancel": function () {
                     $(this).dialog("close");
                     alert(false);
                     dfd.resolve(false);
@@ -64,6 +65,7 @@
     function CreateRoom() {
         location.href = "/CREATEROOM";
     }
+
     $(function () {
         var socket = io.connect();
         socket.emit('request_room_list');
@@ -74,11 +76,10 @@
                         "<tr onclick='RoomJoin(\"" +
                         data[i].roomname + "\", \"" +
                         data[i].game + "\"," +
-                        data[i].no_of_persons + "," +
                         data[i].playerCount +
                         ")'>" +
-                        '<td>' + data[i].roomname + '</td>' +
                         '<td>' + (i + 1) + '</td>' +
+                        '<td>' + data[i].roomname + '</td>' +
                         '<td>' + data[i].game + '</td>' +
                         '<td>' + data[i].playerCount + 'P' + '</td></tr>';
                 $(tag).appendTo('#gamelist');
@@ -101,8 +102,8 @@
         <table id="gamelist" class="table table-hover">
             <thead>
             <tr>
-                <th class="col-xs-7">ROOM NAME</th>
                 <th class="col-xs-1">NUMBER</th>
+                <th class="col-xs-7">ROOM NAME</th>
                 <th class="col-xs-3">GAME</th>
                 <th class="col-xs-1">1P/2P</th>
             </tr>
