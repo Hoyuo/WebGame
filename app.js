@@ -48,8 +48,10 @@ app.engine('ejs', engine);
 
 //처음 접속
 app.get('/', routes.index);
+
 //회원가입페이지이동
 app.get('/SIGN_UP', routes.sign_up);
+
 //회원가입
 app.post('/SIGN_UP', function (req, res, next) {
     if (req.body.password == req.body.confirm_password) {
@@ -57,18 +59,23 @@ app.post('/SIGN_UP', function (req, res, next) {
         req.password = myHash(req.body.password);
         next();
     }
-    else {
+   /* else {
         res.redirect('/SIGN_UP');
-    }
+    }*/
 }, routes.sign_up_post);
+
 //중복아이디확인
 app.get('/CHECKUSERNAME', routes.checkUserName);
+
+app.get('/CHECKLOGIN', routes.checkLogin);
+
 //로그인처리
 app.post('/LOGIN', function (req, res, next) {
     req.username = req.body.username;
     req.password = myHash(req.body.password);
     next();
 }, routes.login_post);
+
 //모바일로그인
 app.post('/LOGINMOBILE', function (req, res, next) {
     console.log('모바일 접속');
@@ -76,12 +83,16 @@ app.post('/LOGINMOBILE', function (req, res, next) {
     req.password = myHash(req.body.password);
     next();
 }, routes.moblie_login_post);
+
 //로그아웃
 app.get('/LOGOUT', routes.logout);
+
 //게임방화면(로비)
 app.get('/GAMEROOMLIST', routes.GAMEROOMLIST);
+
 //방만들기
 app.get('/CREATEROOM', routes.createroom);
+
 //중복방확인
 app.get('/CHECKROOMNAME', function(req, res) {
     var uri = url.parse(req.url, true);
@@ -92,6 +103,7 @@ app.get('/CHECKROOMNAME', function(req, res) {
         req.ret = false;
     }
 }, routes.checkRoomName);
+
 //방참여 todo 이쪽부분에서 애러 발생하니 다시한번 확인
 app.post('/JOIN_ROOM', function (req, res, next) {
     req.roomname = req.body.roomname;
@@ -100,6 +112,7 @@ app.post('/JOIN_ROOM', function (req, res, next) {
     req.peer_1p_id = roominfo[req.roomname].peer_id;
     next();
 }, routes.joinRoom);
+
 //1P페이지이동
 app.post('/ROOM_ADMIN', function (req, res, next) {
     req.roomname = req.body.insert_name;
@@ -110,8 +123,10 @@ app.post('/ROOM_ADMIN', function (req, res, next) {
     next();
 }, routes.createroom_post);
 
+
 //소켓담당부분
 var socket_ids = [];
+
 //roominfo
 var roominfo = [];
 
