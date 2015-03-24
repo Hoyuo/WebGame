@@ -1,13 +1,9 @@
 <% layout('layout') %>
 <script>
     window.onbeforeunload = function () {
-        console.log("aaaaaaaa");
-        window.location.replace('/GAMEROOMLIST');
+        //window.location.href='/GAMEROOMLIST';
+        history.go(-2);
     };
-
-    /*window.onbeforeunload = function () {
-     window.location.replace('/GAMEROOMLIST');
-     }*/
 </script>
 
 <div class="modal-content">
