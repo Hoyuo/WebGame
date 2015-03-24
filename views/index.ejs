@@ -24,12 +24,12 @@
                 <div class="form-group">
                     <label>E-mail</label>
                     <input input type="email" class="form-control" name="username" id="user" placeholder="Email"
-                           maxlength="64">
+                           maxlength="64" onkeydown="checkscript1()">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Password"
-                           maxlength="16">
+                           maxlength="16" onkeydown="checkscript2()">
                 </div>
             </fieldset>
         </div>
@@ -66,4 +66,27 @@
         });
 
     }
+
+    function checkscript1(){
+        var script = $('#user').val();
+
+        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+            alertify.alert('cannot use < > sign', function () {
+                //after clicking OK
+                $('#user').val('');
+            });
+        }
+    }
+
+    function checkscript2(){
+        var script = $('#password').val();
+
+        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+            alertify.alert('cannot use < > sign', function () {
+                //after clicking OK
+                $('#password').val('');
+            });
+        }
+    }
+
 </script>

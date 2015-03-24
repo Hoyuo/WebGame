@@ -10,7 +10,7 @@
         <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
 
         <div class="col-xs-3">
-            <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert ">
+            <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert " onkeydown="checkscript1()">
         </div>
     </div>
     <!--RoomNameCheckButton-->
@@ -112,6 +112,17 @@
             objs2.setAttribute('value', $('#insert_player').val());
             oForm.appendChild(objs2);
             oForm.submit();
+        }
+    }
+
+    function checkscript1(){
+        var script = $('#roomname').val();
+
+        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+            alertify.alert('cannot use < > sign', function () {
+                //after clicking OK
+                $('#roomname').val('');
+            });
         }
     }
 </script>
