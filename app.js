@@ -270,6 +270,7 @@ io.sockets.on('connection', function (socket) {
             if (nickname != undefined) {
                 if (nickname.indexOf('_webPage') != -1) {
                     socket.get('room', function (error, room) {
+                        roominfo[room] = undefined;
                         io.sockets.in(room).emit('reStart');
                         socket.leave(room);
                     });
