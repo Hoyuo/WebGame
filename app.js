@@ -125,13 +125,10 @@ app.post('/ROOM_ADMIN', function (req, res, next) {
     req.roomname = req.body.roomname;
     req.game = req.body.game;
     req.playerCount = req.body.playerCount;
-
-    console.log(req.roomname, req.game, req.playerCount);
-
-    roominfo[req.roomname] = {game: req.game, playerCount: req.playerCount, peer_id: 0};
     next();
 }, routes.createroom_post);
 
+app.get('/ROOM_ADMIN', routes.GAMEROOMLIST);
 
 //소켓담당부분
 var socket_ids = [];
@@ -151,11 +148,15 @@ function getRoomlist(data) {
     var roomlist = [];
     for (var key in data) {
         if (key.indexOf("/") > -1) {
-            roomlist.push({
-                roomname: key.split("/").join(""),
-                game: roominfo[key.split("/").join("")].game,
-                playerCount: roominfo[key.split("/").join("")].playerCount
-            });
+            var temp = key.split("/").join("");
+            if (roominfo[temp] !== undefined) {
+                roomlist.push({
+                    roomname: key.split("/").join(""),
+                    game: roominfo[key.split("/").join("")].game,
+                    playerCount: roominfo[key.split("/").join("")].playerCount,
+                    currentPlayer: data[key].length
+                });
+            }
         }
     }
     return roomlist;
@@ -186,8 +187,9 @@ io.sockets.on('connection', function (socket) {
     });
 
     //웹 페이지 데이터값 받기
-    socket.on('webSingUp', function (data) {
+    socket.on('webSingUp', function (data, room) {
         registerUser(socket, data);
+        roominfo[room.roomname] = {game: room.game, playerCount: room.playerCount, peer_id: 0};
     });
 
     //폰 등록
@@ -261,9 +263,20 @@ io.sockets.on('connection', function (socket) {
         socket.emit('roomlist', roomlist);
     });
 
+    socket.on('check_room_info', function (data) {
+        var roomlist = [];
+        roomlist = getRoomlist(io.sockets.manager.rooms);
+        for (var i = 0; i < roomlist.length; i++) {
+            if (roomlist[i].roomname === data) {
+                socket.emit('check_room_info_post', roomlist[i]);
+                return;
+            }
+        }
+        socket.emit('check_room_info_post', false);
+    });
+
     //연결 해제
     socket.on('disconnect', function () {
-
         //닉네임 등록 해제
         socket.get('nickname', function (err, nickname) {
             //방 정보 해제
@@ -284,5 +297,6 @@ io.sockets.on('connection', function (socket) {
         socket.get('room', function (error, room) {
             roominfo[room].peer_id = data.peer_1p_id;
         });
+        console.log('check', roominfo);
     });
 });

@@ -1,4 +1,9 @@
 <% layout('layout') %>
+<script>
+    window.onunload = function () {
+        window.location.replace('/GAMEROOMLIST');
+    }
+</script>
 
 <div class="modal-content">
     roomName : <%= roomname %>
@@ -6,6 +11,7 @@
 
 <div>
     <br/>
+
     <div id="emulator"></div>
     <br/>
     <script src="/socket.io/socket.io.js"></script>
@@ -37,7 +43,6 @@
                     }
             );
         });
-
         //peer open
         peer.on('open', function (id) {
             console.log("1P 고유 아이디 생성 : " + id);
@@ -63,11 +68,6 @@
         var userid = "<%= username %>";
         var game = "<%= game %>";
         var playerCount = "<%= playerCount %>"
-
-        console.log(roomname);
-        console.log(userid);
-        console.log(game);
-        console.log(playerCount);
 
         $(function () {
             nes = new JSNES({
@@ -115,7 +115,11 @@
 
         socket.on('new', function () {
             socket.emit('join', {'roomname': roomname});
-            socket.emit('webSingUp', userid + '_webPage');
+            socket.emit('webSingUp', userid + '_webPage', {
+                'roomname': roomname,
+                'game': game,
+                'playerCount': playerCount
+            });
         });
 
         //1P 버튼

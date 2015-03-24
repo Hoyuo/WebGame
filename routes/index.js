@@ -188,6 +188,11 @@ exports.createroom_post = function (req, res) {
         return;
     }
 
+    if (req.roomname === undefined) {
+        res.redirect('/');
+        return;
+    }
+
     res.render('jsnes', {
         title: 'OldGame',
         url: req.url,
