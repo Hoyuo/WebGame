@@ -1,11 +1,17 @@
 <% layout('layout') %>
 
 <script>
-    function sign_up_redirect() {
-        location.href = "/SIGN_UP";
-        return true;
-    }
+    history.pushState(null, null, location.href);
+    window.onpopstate = function(event) {
+        history.go(1);
+    };
 </script>
+
+
+<script src="js/alertify.min.js"></script>
+<link rel="stylesheet" href="stylesheets/alertify.core.css"/>
+<link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
+
 
 <div class="modal-content">
     <div class="modal-header">
@@ -28,11 +34,36 @@
             </fieldset>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" style="background-color: #000080">Login</button>
+            <button type="submit" onclick="checkLogin()" class="btn btn-primary" style="background-color: #000080">Login</button>
             <button type="button" onclick="sign_up_redirect()" class="btn btn-primary"
-                    style="background-color: #000080">Sign
-                Up
+                    style="background-color: #000080">Sign Up
             </button>
         </div>
     </form>
 </div>
+
+<script>
+
+    function sign_up_redirect() {
+        location.href = "/SIGN_UP";
+        return true;
+    }
+
+    function checkLogin(){
+        var username = $('#user').val();
+        var password =  $('#password').val();
+
+        $.get('/CHECKLOGIN?id='+ username, function (data, err) {
+
+            if (data == 'true') {
+                $('#user').val('');
+                $('#password').val('');
+                alertify.alert('Please check Your Email & Password', function () {
+                    //after clicking OK
+                });
+            }
+
+        });
+
+    }
+</script>

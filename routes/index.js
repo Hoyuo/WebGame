@@ -19,7 +19,7 @@ var memberSchema = mongoose.Schema({
 var Member = mongoose.model('Member', memberSchema);
 
 //route functions
-// Main (page: 0)
+// 메인페이지
 exports.index = function (req, res) {
     if (req.session.login === 'login') {
         res.redirect('/GAMEROOMLIST');
@@ -37,6 +37,7 @@ exports.index = function (req, res) {
     });
 };
 
+//로그인페이지
 exports.login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
         if (member != null) {
@@ -47,17 +48,30 @@ exports.login_post = function (req, res) {
         }
         else {
             res.status(100);
-            res.redirect('/');
+            //res.redirect('/');
         }
     });
 };
 
+//로그인체크(아이디 비번 일치하는지)
+exports.checkLogin = function (req, res) {
+    var uri = url.parse(req.url, true);
+    Member.findOne({username: uri.query.id, password: uri.query.password}, function (err, member) {
+        if (member != null) {
+            res.end('false');
+        }
+        else {
+            res.end('true');
+        }
+    });
+};
+
+//게임방리스트페이지
 exports.GAMEROOMLIST = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
         return;
     }
-
     res.render('gameroomlist', {
         title: 'OldGame',
         login: req.session.login,
@@ -65,6 +79,7 @@ exports.GAMEROOMLIST = function (req, res) {
         url: req.url
     });
 };
+
 
 exports.moblie_login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
@@ -79,13 +94,14 @@ exports.moblie_login_post = function (req, res) {
     });
 };
 
+//로그아웃페이지
 exports.logout = function (req, res) {
     req.session.login = 'logout';
-
     res.status(200);
     res.redirect('/');
 };
 
+//회원가입페이지
 exports.sign_up = function (req, res) {
     res.status(200);
 
@@ -99,6 +115,7 @@ exports.sign_up = function (req, res) {
     });
 };
 
+//회원가입체크(중복아이디 존재 여부)
 exports.checkUserName = function (req, res) {
     var uri = url.parse(req.url, true);
     Member.findOne({username: uri.query.id}, function (err, member) {
@@ -112,11 +129,7 @@ exports.checkUserName = function (req, res) {
     });
 };
 
-exports.checkRoomName = function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end(req.ret);
-}
-
+//회원가입진행
 exports.sign_up_post = function (req, res) {
     res.status(200);
 
@@ -142,6 +155,7 @@ exports.sign_up_post = function (req, res) {
     }
 };
 
+//방생성페이지
 exports.createroom = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
@@ -157,6 +171,13 @@ exports.createroom = function (req, res) {
     });
 };
 
+//방이름체크
+exports.checkRoomName = function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end(req.ret);
+}
+
+//방생성진행
 exports.createroom_post = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
@@ -180,6 +201,7 @@ exports.createroom_post = function (req, res) {
     });
 };
 
+//방입장페이지
 exports.joinRoom = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
@@ -198,6 +220,7 @@ exports.joinRoom = function (req, res) {
         peer_1p_id: req.peer_1p_id
     });
 };
+
 
 exports.checkid = function (userId, uuid) {
     Member.findOne({username: userId}, function (err, member) {

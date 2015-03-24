@@ -1,4 +1,12 @@
 <% layout('layout') %>
+
+<script>
+    history.pushState(null, null, location.href);
+    window.onpopstate = function(event) {
+        history.go(1);
+    };
+</script>
+
 <script src="js/alertify.min.js"></script>
 <link rel="stylesheet" href="stylesheets/alertify.core.css"/>
 <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
