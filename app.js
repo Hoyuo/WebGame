@@ -163,7 +163,6 @@ function getRoomlist(data) {
 }
 
 //no_of_persons: data[key].length
-
 function getRoomSocketId(nickname) {
     for (var socketid in socket_ids) {
         if (socketid == nickname) {
@@ -187,8 +186,12 @@ io.sockets.on('connection', function (socket) {
     });
 
     //웹 페이지 데이터값 받기
-    socket.on('webSingUp', function (data, room) {
+    socket.on('webSingUp', function (data) {
         registerUser(socket, data);
+    });
+
+    //방 생성 후 방 정보 등록
+    socket.on('roominfo', function (room) {
         roominfo[room.roomname] = {game: room.game, playerCount: room.playerCount, peer_id: 0};
     });
 
