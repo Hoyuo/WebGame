@@ -4,7 +4,8 @@
 <link rel="stylesheet" href="stylesheets/alertify.core.css"/>
 <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 
-<form class="form-horizontal" method="post" action="/ROOM_ADMIN">
+<form class="form-horizontal">
+    <!--RoomName-->
     <div class="form-group">
         <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
 
@@ -12,14 +13,13 @@
             <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert ">
         </div>
     </div>
-
+    <!--RoomNameCheckButton-->
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
             <button type="button" onclick="checkRoomName()" class="btn btn-default">Check RoomName</button>
         </div>
     </div>
-
-
+    <!--RoomGame-->
     <div class="form-group">
         <label for="insert-game" class="col-sm-3 control-label" style="color: #ffffff">Game</label>
 
@@ -35,7 +35,7 @@
             </select>
         </div>
     </div>
-
+    <!--RoomPlayerCount-->
     <div class="form-group">
         <label for="insert-player" class="col-sm-3 control-label" style="color: #ffffff">1P / 2P</label>
 
@@ -47,40 +47,70 @@
             </select>
         </div>
     </div>
-
     <br/>
     <br/>
-
+    <!--RoomCreateButton-->
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-            <button type="submit" class="btn btn-default">Create</button>
+            <button type="button" class="btn btn-default" onclick="CreateRoomPost()">Create</button>
         </div>
     </div>
 </form>
 
 <script>
+    var check = false;
     function checkRoomName() {
         var roomname = $('#roomname').val();
 
-        if (roomname == '') {
+        if (roomname === '') {
             alertify.alert('Please enter RoomName', function () {
                 //after clicking OK
+                check = false;
             });
         }
         else {
             $.get('/CHECKROOMNAME?id=' + roomname, function (data, err) {
-                if (data == 'true') {
-                    $('#user').val('');
-                    alertify.alert('Username already exists. Please enter another Email', function () {
+                if (data === 'true') {
+                    $('#roomname').val('');
+                    alertify.alert('RoomName already exists. Please enter another RoomName', function () {
                         //after clicking OK
+                        check = false;
                     });
                 }
                 else {
                     alertify.alert('You can use this RoomName', function () {
                         //after clicking OK
+                        check = true;
                     });
                 }
             });
+        }
+    }
+    function CreateRoomPost() {
+        if (check === false) {
+            alertify.alert('Please Check RoomName!', function () {
+                //after clicking OK
+            });
+        } else {
+            var oForm = document.createElement('form');
+            oForm.method = "post";
+            oForm.action = "/ROOM_ADMIN";
+            var objs = document.createElement("input");
+            objs.setAttribute('type', 'hidden');
+            objs.setAttribute('name', 'roomname');
+            objs.setAttribute('value', $('#roomname').val());
+            oForm.appendChild(objs);
+            var objs1 = document.createElement("input");
+            objs1.setAttribute('type', 'hidden');
+            objs1.setAttribute('name', 'game');
+            objs1.setAttribute('value', $('#insert_game').val());
+            oForm.appendChild(objs1);
+            var objs2 = document.createElement("input");
+            objs2.setAttribute('type', 'hidden');
+            objs2.setAttribute('name', 'playerCount');
+            objs2.setAttribute('value', $('#insert_player').val());
+            oForm.appendChild(objs2);
+            oForm.submit();
         }
     }
 </script>

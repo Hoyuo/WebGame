@@ -12,6 +12,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var session = require('cookie-session');
 var favicon = require('serve-favicon');
+var url = require('url');
 
 //Socket.IO
 var io = require('socket.io').listen(server);
@@ -33,6 +34,9 @@ var createSession = function createSession() {
         next();
     };
 };
+
+//roominfo
+var roominfo = [];
 
 //all environment
 app.set('port', process.env.PORT || 3000);
@@ -59,9 +63,9 @@ app.post('/SIGN_UP', function (req, res, next) {
         req.password = myHash(req.body.password);
         next();
     }
-   /* else {
-        res.redirect('/SIGN_UP');
-    }*/
+    /* else {
+     res.redirect('/SIGN_UP');
+     }*/
 }, routes.sign_up_post);
 
 //중복아이디확인
@@ -94,14 +98,17 @@ app.get('/GAMEROOMLIST', routes.GAMEROOMLIST);
 app.get('/CREATEROOM', routes.createroom);
 
 //중복방확인
-app.get('/CHECKROOMNAME', function(req, res) {
+app.get('/CHECKROOMNAME', function (req, res, next) {
     var uri = url.parse(req.url, true);
     var roomname = uri.query.id;
-    if(roominfo[roomname] === undefined) {
-        req.ret = true;
-    } else {
+    if (roominfo[roomname] === undefined) {
         req.ret = false;
+    } else {
+        req.ret = true;
     }
+    //undefined이면 방이름이 없어서 중복이 아니므로 false
+    //방이름이 있으면 true
+    next();
 }, routes.checkRoomName);
 
 //방참여 todo 이쪽부분에서 애러 발생하니 다시한번 확인
@@ -115,9 +122,11 @@ app.post('/JOIN_ROOM', function (req, res, next) {
 
 //1P페이지이동
 app.post('/ROOM_ADMIN', function (req, res, next) {
-    req.roomname = req.body.insert_name;
-    req.game = req.body.insert_game;
-    req.playerCount = req.body.insert_player;
+    req.roomname = req.body.roomname;
+    req.game = req.body.game;
+    req.playerCount = req.body.playerCount;
+
+    console.log(req.roomname, req.game, req.playerCount);
 
     roominfo[req.roomname] = {game: req.game, playerCount: req.playerCount, peer_id: 0};
     next();
@@ -126,9 +135,6 @@ app.post('/ROOM_ADMIN', function (req, res, next) {
 
 //소켓담당부분
 var socket_ids = [];
-
-//roominfo
-var roominfo = [];
 
 function registerUser(socket, nickname) {
     socket.get('nickname', function (err, pre_nick) {

@@ -174,18 +174,17 @@ exports.createroom = function (req, res) {
 //방이름체크
 exports.checkRoomName = function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end(req.ret);
+    if (req.ret === true) {
+        res.end('true');
+    } else {
+        res.end('false');
+    }
 }
 
 //방생성진행
 exports.createroom_post = function (req, res) {
     if (req.session.login !== 'login') {
         res.redirect('/');
-        return;
-    }
-    console.log(req.roomname);
-    if(req.roomname === '' ) {
-        res.redirect('/GAMEROOMLIST');
         return;
     }
 

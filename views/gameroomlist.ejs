@@ -2,7 +2,7 @@
 
 <script>
     history.pushState(null, null, location.href);
-    window.onpopstate = function(event) {
+    window.onpopstate = function (event) {
         history.go(1);
     };
 </script>
@@ -46,34 +46,33 @@
             }
         });
     }
-
-    function customConfirm(customMessage) {
-        var dfd = new jQuery.Deferred();
-        $("#popUp").html(customMessage);
-        $("#popUp").dialog({
-            resizable: false,
-            height: 240,
-            modal: true,
-            buttons: {
-                "OK": function () {
-                    $(this).dialog("close");
-                    alert(true);
-                    dfd.resolve(true);
-                },
-                "Cancel": function () {
-                    $(this).dialog("close");
-                    alert(false);
-                    dfd.resolve(false);
-                }
-            }
-        });
-        return dfd.promise();
-    }
-
+    /*
+     function customConfirm(customMessage) {
+     var dfd = new jQuery.Deferred();
+     $("#popUp").html(customMessage);
+     $("#popUp").dialog({
+     resizable: false,
+     height: 240,
+     modal: true,
+     buttons: {
+     "OK": function () {
+     $(this).dialog("close");
+     alert(true);
+     dfd.resolve(true);
+     },
+     "Cancel": function () {
+     $(this).dialog("close");
+     alert(false);
+     dfd.resolve(false);
+     }
+     }
+     });
+     return dfd.promise();
+     }
+     */
     function CreateRoom() {
         location.href = "/CREATEROOM";
     }
-
     $(function () {
         var socket = io.connect();
         socket.emit('request_room_list');
