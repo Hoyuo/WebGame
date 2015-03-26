@@ -71,8 +71,6 @@ app.post('/SIGN_UP', function (req, res, next) {
 //중복아이디확인
 app.get('/CHECKUSERNAME', routes.checkUserName);
 
-app.get('/CHECKLOGIN', routes.checkLogin);
-
 //로그인처리
 app.post('/LOGIN', function (req, res, next) {
     req.username = req.body.username;
@@ -111,7 +109,7 @@ app.get('/CHECKROOMNAME', function (req, res, next) {
     next();
 }, routes.checkRoomName);
 
-//방참여 todo 이쪽부분에서 애러 발생하니 다시한번 확인
+//방참여
 app.post('/JOIN_ROOM', function (req, res, next) {
     req.roomname = req.body.roomname;
     req.game = req.body.game;

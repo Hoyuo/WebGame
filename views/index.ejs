@@ -1,17 +1,28 @@
 <% layout('layout') %>
-
-<script>
-    history.pushState(null, null, location.href);
-    window.onpopstate = function(event) {
-        history.go(1);
-    };
-</script>
-
-
 <script src="js/alertify.min.js"></script>
 <link rel="stylesheet" href="stylesheets/alertify.core.css"/>
 <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 
+<script>
+    history.pushState(null, null, location.href);
+    window.onpopstate = function (event) {
+        history.go(1);
+    };
+
+    var check = 0;
+    check = <%= check %>;
+    if (check === 1) {
+        alertify.alert('Your Email is already logged in.', function () {
+            //after clicking OK
+            $('#password').val('');
+        });
+    } else if (check === 2) {
+        alertify.alert('Plases Check Your Email and Password', function () {
+            //after clicking OK
+            $('#password').val('');
+        });
+    }
+</script>
 
 <div class="modal-content">
     <div class="modal-header">
@@ -34,7 +45,9 @@
             </fieldset>
         </div>
         <div class="modal-footer">
-            <button type="submit" onclick="checkLogin()" class="btn btn-primary" style="background-color: #000080">Login</button>
+            <button type="submit" class="btn btn-primary" style="background-color: #000080">
+                Login
+            </button>
             <button type="button" onclick="sign_up_redirect()" class="btn btn-primary"
                     style="background-color: #000080">Sign Up
             </button>
@@ -49,36 +62,10 @@
         return true;
     }
 
-    function checkLogin(){
-        var username = $('#user').val();
-        var password =  $('#password').val();
-
-        $.get('/CHECKLOGIN?id='+ username, function (data, err) {
-
-            if (data == 'true') {
-                $('#user').val('');
-                $('#password').val('');
-                alertify.alert('Please check Your Email & Password', function () {
-                    //after clicking OK
-                });
-            }
-            if (data == 'false') {
-                $('#user').val('');
-                $('#password').val('');
-                alertify.alert('email already in use', function () {
-                    //after clicking OK
-                });
-            }
-
-
-        });
-
-    }
-
-    function checkscript1(){
+    function checkscript1() {
         var script = $('#user').val();
 
-        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+        if ((script.search("<") != -1) || (script.search(">") != -1)) {
             alertify.alert('cannot use < > sign', function () {
                 //after clicking OK
                 $('#user').val('');
@@ -86,10 +73,10 @@
         }
     }
 
-    function checkscript2(){
+    function checkscript2() {
         var script = $('#password').val();
 
-        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+        if ((script.search("<") != -1) || (script.search(">") != -1)) {
             alertify.alert('cannot use < > sign', function () {
                 //after clicking OK
                 $('#password').val('');

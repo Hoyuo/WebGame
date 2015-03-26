@@ -27,7 +27,6 @@ exports.index = function (req, res) {
         res.redirect('/GAMEROOMLIST');
         return;
     }
-
     res.status(200);
 
     res.render('index', {
@@ -35,41 +34,43 @@ exports.index = function (req, res) {
         page: 0,
         url: req.url,
         login: req.session.login,
-        username: req.session.username
+        username: req.session.username,
+        check: 0
     });
 };
 
 //로그인페이지
 exports.login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
-        if (member != null && member.weblogin == 0) {
-            Member.update({username:member.username}, {$set:{weblogin:1}}, function(err){
+        if (member !== null) {
+            if (member.weblogin === false) {
+                Member.update({username: member.username}, {$set: {weblogin: true}}, function (err) {
+                });
+                req.session.login = 'login';
+                req.session.username = req.username;
+                res.status(200);
+                res.redirect('/GAMEROOMLIST');
+            } else {
+                res.render('index', {
+                    title: 'OldGame',
+                    page: 0,
+                    url: req.url,
+                    login: 'logout',
+                    username: '',
+                    check: 1
+                });
+                console.log('로그인중');
+            }
+        } else {
+            res.render('index', {
+                title: 'OldGame',
+                page: 0,
+                url: req.url,
+                login: 'logout',
+                username: '',
+                check: 2
             });
-            req.session.login = 'login';
-            req.session.username = req.username;
-            res.status(200);
-            res.redirect('/GAMEROOMLIST');
-        }
-        else if (member != null && member.weblogin == 1){
-            res.status(100);
-            //res.redirect('/');
-        }
-        else {
-            res.status(100);
-            //res.redirect('/');
-        }
-    });
-};
-
-//로그인체크(아이디 비번 일치하는지)
-exports.checkLogin = function (req, res) {
-    var uri = url.parse(req.url, true);
-    Member.findOne({username: uri.query.id, password: uri.query.password}, function (err, member) {
-        if (member == null) {
-            res.end('true');
-        }
-        if(member != null && member.weblogin == 1) {
-            res.end('false');
+            console.log('아이디 비번 틀림');
         }
     });
 };
@@ -104,7 +105,7 @@ exports.moblie_login_post = function (req, res) {
 //로그아웃페이지
 exports.logout = function (req, res) {
     req.session.login = 'logout';
-    Member.update({username:req.session.username}, {$set:{weblogin:0}}, function(err){
+    Member.update({username: req.session.username}, {$set: {weblogin: false}}, function (err) {
     });
     res.status(200);
     res.redirect('/');
@@ -150,7 +151,13 @@ exports.sign_up_post = function (req, res) {
             if (err) return handleError(err);
 
             if (member == null) {
-                var myMember = new Member({username: curUsername, password: req.password, uuid: 0, weblogin: 0, applogin: 0});
+                var myMember = new Member({
+                    username: curUsername,
+                    password: req.password,
+                    uuid: 0,
+                    weblogin: 0,
+                    applogin: 0
+                });
                 myMember.save(function (err, data) {
                     if (err) {
                     }
