@@ -32,7 +32,6 @@ exports.index = function (req, res) {
     res.render('index', {
         title: 'OldGame',
         page: 0,
-        url: req.url,
         login: req.session.login,
         username: req.session.username,
         check: 0
@@ -54,23 +53,19 @@ exports.login_post = function (req, res) {
                 res.render('index', {
                     title: 'OldGame',
                     page: 0,
-                    url: req.url,
                     login: 'logout',
                     username: '',
                     check: 1
                 });
-                console.log('로그인중');
             }
         } else {
             res.render('index', {
                 title: 'OldGame',
                 page: 0,
-                url: req.url,
                 login: 'logout',
                 username: '',
                 check: 2
             });
-            console.log('아이디 비번 틀림');
         }
     });
 };
@@ -84,8 +79,7 @@ exports.GAMEROOMLIST = function (req, res) {
     res.render('gameroomlist', {
         title: 'OldGame',
         login: req.session.login,
-        username: req.session.username,
-        url: req.url
+        username: req.session.username
     });
 };
 
@@ -117,7 +111,6 @@ exports.sign_up = function (req, res) {
 
     res.render('sign_up', {
         title: 'Sign up',
-        url: req.url,
         page: 1,
         login: req.session.login,
         username: req.session.username,
@@ -180,7 +173,6 @@ exports.createroom = function (req, res) {
 
     res.render('createroom', {
         title: 'OldGame',
-        url: req.url,
         page: 2,
         login: req.session.login,
         username: req.session.username
@@ -211,7 +203,6 @@ exports.createroom_post = function (req, res) {
 
     res.render('jsnes', {
         title: 'OldGame',
-        url: req.url,
         page: 3,
         login: req.session.login,
         username: req.session.username,
@@ -230,7 +221,6 @@ exports.joinRoom = function (req, res) {
 
     res.render('joinroom', {
         title: 'OldGame',
-        url: req.url,
         page: 4,
         login: req.session.login,
         username: req.session.username,
