@@ -77,6 +77,7 @@ app.get('/CHECKLOGIN', routes.checkLogin);
 app.post('/LOGIN', function (req, res, next) {
     req.username = req.body.username;
     req.password = myHash(req.body.password);
+    req.weblogin = 1;
     next();
 }, routes.login_post);
 

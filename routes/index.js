@@ -12,7 +12,9 @@ var db = mongoose.connection;
 var memberSchema = mongoose.Schema({
     username: 'string',
     password: 'string',
-    uuid: 'string'
+    uuid: 'string',
+    weblogin: 'boolean',
+    applogin: 'boolean'
 });
 
 //compiles our schema into model
@@ -43,6 +45,7 @@ exports.login_post = function (req, res) {
         if (member != null) {
             req.session.login = 'login';
             req.session.username = req.username;
+            req.session.weblogin= 1;
             res.status(200);
             res.redirect('/GAMEROOMLIST');
         }
@@ -141,7 +144,7 @@ exports.sign_up_post = function (req, res) {
             if (err) return handleError(err);
 
             if (member == null) {
-                var myMember = new Member({username: curUsername, password: req.password, uuid: 0});
+                var myMember = new Member({username: curUsername, password: req.password, uuid: 0, weblogin: 0, applogin: 0});
                 myMember.save(function (err, data) {
                     if (err) {
                     }
