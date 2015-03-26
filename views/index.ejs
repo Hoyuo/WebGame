@@ -62,6 +62,14 @@
                     //after clicking OK
                 });
             }
+            if (data == 'false') {
+                $('#user').val('');
+                $('#password').val('');
+                alertify.alert('email already in use', function () {
+                    //after clicking OK
+                });
+            }
+
 
         });
 

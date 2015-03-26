@@ -42,12 +42,17 @@ exports.index = function (req, res) {
 //로그인페이지
 exports.login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
-        if (member != null) {
+        if (member != null && member.weblogin == 0) {
+            Member.update({username:member.username}, {$set:{weblogin:1}}, function(err){
+            });
             req.session.login = 'login';
             req.session.username = req.username;
-            req.session.weblogin= 1;
             res.status(200);
             res.redirect('/GAMEROOMLIST');
+        }
+        else if (member != null && member.weblogin == 1){
+            res.status(100);
+            //res.redirect('/');
         }
         else {
             res.status(100);
@@ -60,11 +65,11 @@ exports.login_post = function (req, res) {
 exports.checkLogin = function (req, res) {
     var uri = url.parse(req.url, true);
     Member.findOne({username: uri.query.id, password: uri.query.password}, function (err, member) {
-        if (member != null) {
-            res.end('false');
-        }
-        else {
+        if (member == null) {
             res.end('true');
+        }
+        if(member != null && member.weblogin == 1) {
+            res.end('false');
         }
     });
 };
@@ -83,7 +88,6 @@ exports.GAMEROOMLIST = function (req, res) {
     });
 };
 
-
 exports.moblie_login_post = function (req, res) {
     Member.findOne({username: req.username, password: req.password}, function (err, member) {
         if (member != null) {
@@ -100,6 +104,8 @@ exports.moblie_login_post = function (req, res) {
 //로그아웃페이지
 exports.logout = function (req, res) {
     req.session.login = 'logout';
+    Member.update({username:req.session.username}, {$set:{weblogin:0}}, function(err){
+    });
     res.status(200);
     res.redirect('/');
 };
