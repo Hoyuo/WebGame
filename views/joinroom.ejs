@@ -29,7 +29,6 @@
             );
         });
 
-        //todo ip고유아이디 바꿔야함
         var roomname = "<%= roomname %>";
         var userid = "<%= username %>";
         var game = "<%= game %>";
@@ -46,7 +45,9 @@
 
         dataConnection.on('close', function () {
             //연결 해제 부분
-            //todo 소켓 restart
+            alertify.alert('The user has left', function () {
+                location.href = "/gameroomlist";
+            });
 
             console.log("Datachannel Close");
         });

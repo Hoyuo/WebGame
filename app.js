@@ -46,9 +46,11 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(require('express-method-override')('method_override_param_name'));
-app.use(session({secret: 'secret key'}));
+app.use(session({secret: 'secret key', cookie: {maxAge: 600000}}));
 app.use(express.static(path.join(__dirname, '/views')));
+app.use(createSession());
 app.engine('ejs', engine);
+
 
 //처음 접속
 app.get('/', routes.index);
@@ -80,7 +82,6 @@ app.post('/LOGIN', function (req, res, next) {
 
 //모바일로그인
 app.post('/LOGINMOBILE', function (req, res, next) {
-    console.log('모바일 접속');
     req.username = req.body.userId;
     req.password = myHash(req.body.password);
     next();
@@ -206,7 +207,7 @@ io.sockets.on('connection', function (socket) {
             var playerlist = io.sockets.manager.rooms["/" + room.roomname];
 
             if (room !== -1) {
-                if (playerlist[0] === room.id)//todo 수정
+                if (playerlist[0] === room.id)
                     io.sockets.in(room.room).emit('btn_1', data);
                 else
                     io.sockets.in(room.room).emit('btn_2', data);
@@ -220,7 +221,7 @@ io.sockets.on('connection', function (socket) {
             var playerlist = io.sockets.manager.rooms["/" + room.roomname];
 
             if (room !== -1) {
-                if (playerlist[0] === room.id)//todo 수정
+                if (playerlist[0] === room.id)
                     io.sockets.in(room.room).emit('btn_1', data);
                 else
                     io.sockets.in(room.room).emit('btn_2', data);
@@ -235,7 +236,7 @@ io.sockets.on('connection', function (socket) {
             if (room !== -1) {
                 var playerlist = io.sockets.manager.rooms["/" + room.roomname];
 
-                if (playerlist[0] === room.id)//todo 수정
+                if (playerlist[0] === room.id)
                     io.sockets.in(room.room).emit('pad_1', data, flag);
                 else
                     io.sockets.in(room.room).emit('pad_2', data, flag);
@@ -249,7 +250,7 @@ io.sockets.on('connection', function (socket) {
             if (room !== -1) {
                 var playerlist = io.sockets.manager.rooms["/" + room.roomname];
 
-                if (playerlist[0] === room.id)//todo 수정
+                if (playerlist[0] === room.id)
                     io.sockets.in(room.room).emit('pad_1', data, flag);
                 else
                     io.sockets.in(room.room).emit('pad_2', data, flag);
@@ -298,6 +299,5 @@ io.sockets.on('connection', function (socket) {
         socket.get('room', function (error, room) {
             roominfo[room].peer_id = data.peer_1p_id;
         });
-        console.log('check', roominfo);
     });
 });

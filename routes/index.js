@@ -32,8 +32,8 @@ exports.index = function (req, res) {
     res.render('index', {
         title: 'OldGame',
         page: 0,
-        login: req.session.login,
-        username: req.session.username,
+        login: 'logout',
+        username: '',
         check: 0
     });
 };
@@ -97,12 +97,24 @@ exports.moblie_login_post = function (req, res) {
 };
 
 //로그아웃페이지
+//todo uncaught Error: Syntax error, unrecognized expression: 애러 처리 해야함
 exports.logout = function (req, res) {
-    req.session.login = 'logout';
-    Member.update({username: req.session.username}, {$set: {weblogin: false}}, function (err) {
+    Member.update({username: req.session.username}, {$set: {weblogin: false}}, function (err, updated) {
+        if (err || !updated) {
+            console.log('logout 실패');
+            if (req.session.login === 'logout') {
+                res.status(200);
+                res.redirect('/');
+            }
+        }
+        else {
+            console.log('logout 성공');
+            req.session.login = 'logout';
+            req.session.username = '';
+            res.status(200);
+            res.redirect('/');
+        }
     });
-    res.status(200);
-    res.redirect('/');
 };
 
 //회원가입페이지

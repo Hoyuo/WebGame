@@ -10,7 +10,8 @@
         <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
 
         <div class="col-xs-3">
-            <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert " onkeydown="checkscript1()">
+            <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert "
+                   onkeydown="checkscript1()" style="ime-mode:disabled;">
         </div>
     </div>
     <!--RoomNameCheckButton-->
@@ -62,7 +63,7 @@
 
     function checkRoomName() {
         var roomname = $('#roomname').val();
-
+        roomname.toLowerCase();
         if (roomname === '') {
             alertify.alert('Please enter RoomName', function () {
                 //after clicking OK
@@ -88,8 +89,18 @@
         }
     }
     function CreateRoomPost() {
+        var insert_player = $('#insert_player').val();
+        var game = $('#insert_game').val();
         if (check === false) {
             alertify.alert('Please Check RoomName!', function () {
+                //after clicking OK
+            });
+        } else if (game === 'select') {
+            alertify.alert('Please Game Select!', function () {
+                //after clicking OK
+            });
+        } else if (insert_player === 'select') {
+            alertify.alert('Please 1P/2P Select', function () {
                 //after clicking OK
             });
         } else {
@@ -99,7 +110,7 @@
             var objs = document.createElement("input");
             objs.setAttribute('type', 'hidden');
             objs.setAttribute('name', 'roomname');
-            objs.setAttribute('value', $('#roomname').val());
+            objs.setAttribute('value', $('#roomname').val().toLowerCase());
             oForm.appendChild(objs);
             var objs1 = document.createElement("input");
             objs1.setAttribute('type', 'hidden');
