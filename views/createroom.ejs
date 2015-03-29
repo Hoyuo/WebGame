@@ -125,7 +125,6 @@
             oForm.submit();
         }
     }
-
     function checkscript1(){
         var script = $('#roomname').val();
 
@@ -136,4 +135,9 @@
             });
         }
     }
+
+    history.pushState(null, null, location.href);
+    window.onpopstate = function (event) {
+        location.href = "/GAMEROOMLIST"
+    };
 </script>

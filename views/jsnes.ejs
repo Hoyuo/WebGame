@@ -253,7 +253,13 @@
         socket.on('reStart', function () {
             nes.reloadRom();
             nes.start();
-        })
+        });
+
+        //뒤로 가기 막기
+        history.pushState(null, null, location.href);
+        window.onpopstate = function (event) {
+            location.href = "/GAMEROOMLIST"
+        };
 
     </script>
 </div>

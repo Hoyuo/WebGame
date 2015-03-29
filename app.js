@@ -51,7 +51,6 @@ app.use(express.static(path.join(__dirname, '/views')));
 app.use(createSession());
 app.engine('ejs', engine);
 
-
 //처음 접속
 app.get('/', routes.index);
 
