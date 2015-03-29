@@ -7,13 +7,14 @@
   },
   "dependencies": {
     "body-parser": "~1.10.2",
+    "cookie-parser": "*",
     "ejs": "~2.2.3",
     "express": "~4.11.1",
     "serve-favicon": "~2.2.0",
     "bootstrap": "*",
     "mongoose": "3.8",
     "ejs-locals": "*",
-    "cookie-session": "*",
+    "express-session": "*",
     "express-method-override": "*",
     "socket.io": "0.9.6",
     "socket.io-redis": "*"

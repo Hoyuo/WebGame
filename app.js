@@ -10,7 +10,7 @@ server.listen(3000);
 var engine = require('ejs-locals');
 var path = require('path');
 var bodyParser = require('body-parser');
-var session = require('cookie-session');
+var session = require('express-session');
 var favicon = require('serve-favicon');
 var url = require('url');
 
@@ -46,7 +46,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(require('express-method-override')('method_override_param_name'));
-app.use(session({secret: 'secret key', cookie: {maxAge: 600000}}));
+app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true}));
 app.use(express.static(path.join(__dirname, '/views')));
 app.use(createSession());
 app.engine('ejs', engine);

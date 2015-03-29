@@ -109,8 +109,8 @@ exports.logout = function (req, res) {
         }
         else {
             console.log('logout 성공');
-            req.session.login = 'logout';
-            req.session.username = '';
+            req.session.login = '';
+            req.session.name = '';
             res.status(200);
             res.redirect('/');
         }
