@@ -14,7 +14,8 @@ var memberSchema = mongoose.Schema({
     password: 'string',
     uuid: 'string',
     weblogin: 'boolean',
-    applogin: 'boolean'
+    applogin: 'boolean',
+    socketlogin: 'boolean'
 });
 
 //compiles our schema into model
@@ -161,7 +162,8 @@ exports.sign_up_post = function (req, res) {
                     password: req.password,
                     uuid: 0,
                     weblogin: 0,
-                    applogin: 0
+                    applogin: 0,
+                    socketlogin: 0
                 });
                 myMember.save(function (err, data) {
                     if (err) {
