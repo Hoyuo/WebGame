@@ -42,13 +42,13 @@
         var regex=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
 
         if (username == '') {
-            alertify.alert('Please enter Email', function () {
+            alertify.alert('Please Abide by Email form.', function () {
                 //after clicking OK
             });
         }
 
         else if(regex.test(username)===false){
-            alertify.alert('Please enter Email', function () {
+            alertify.alert('Please Abide by Email form.', function () {
                 //after clicking OK
                 $('#user').val('');
             });
@@ -62,7 +62,7 @@
                     });
                 }
                 else {
-                    alertify.alert('You can use this Email', function () {
+                    alertify.alert('You can use this Email.', function () {
                         //after clicking OK
                     });
                 }

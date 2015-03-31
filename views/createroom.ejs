@@ -30,9 +30,22 @@
                 <option value="Bubble Bobble">Bubble Bobble</option>
                 <option value="Contra">Contra</option>
                 <option value="Donkey Kong">Donkey Kong</option>
-                <option value="Mario Bros">Mario Bros</option>
+                <option value="Pac-Man">Pac-Man</option>
                 <option value="Mega Man">Mega Man</option>
+                <option value="Tennis">Tennis</option>
+                <option value="Mario Bros">Mario Bros</option>
+                <option value="Super Mario Bros">Super Mario Bros</option>
                 <option value="Super Mario Bros3">Super Mario Bros3</option>
+                <option value="Tetris">Tetris</option>
+                <option value="Tetris 2">Tetris 2</option>
+                <option value="Dr. Mario">Dr. Mario</option>
+                <option value="Zelda 2">Zelda 2</option>
+                <option value="Legend of Zelda">Legend of Zelda</option>
+                <option value="Golf">Golf</option>
+                <option value="Lemmings">Lemmings</option>
+                <option value="Lifeforce">Lifeforce</option>
+                <option value="lj65">lj65</option>
+                <option value="croom">Croom</option>
             </select>
         </div>
     </div>
@@ -62,7 +75,7 @@
     var check = false;
 
     function checkRoomName() {
-        var roomname = $('#roomname').val();
+        var roomname = $('#roomname').val().trim();
         roomname.toLowerCase();
         if (roomname === '') {
             alertify.alert('Please enter RoomName', function () {
@@ -138,6 +151,14 @@
 
     history.pushState(null, null, location.href);
     window.onpopstate = function (event) {
-        location.href = "/GAMEROOMLIST"
+        location.href = "/GAMEROOMLIST";
+        /*jQuery.ajax({
+         type: "POST",
+         url: "../GAMEROOMLIST",
+         data: "<%= username %>",
+         cache: false,
+         success: function (response) {
+         }
+         });*/
     };
 </script>

@@ -10,7 +10,7 @@ server.listen(3000);
 var engine = require('ejs-locals');
 var path = require('path');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var session = require('cookie-session');
 var favicon = require('serve-favicon');
 var url = require('url');
 
@@ -281,16 +281,26 @@ io.sockets.on('connection', function (socket) {
         //닉네임 등록 해제
         socket.get('nickname', function (err, nickname) {
             //방 정보 해제
+
             if (nickname != undefined) {
-                if (nickname.indexOf('_webPage') != -1) {
-                    socket.get('room', function (error, room) {
-                        roominfo[room] = undefined;
-                        io.sockets.in(room).emit('reStart');
-                        socket.leave(room);
-                    });
+                var chk = nickname.substring(nickname.length-2, nickname.length);
+                if( chk != '2p' ){
+
+                    if (nickname.indexOf('_webPage') != -1) {
+                        socket.get('room', function (error, room) {
+                            roominfo[room] = undefined;
+                            io.sockets.in(room).emit('reStart');
+                            socket.leave(room);
+                        });
+                    }
+                    delete socket_ids[nickname];
+                    routes.fireLogout(nickname.substring(0, nickname.length-8));
+                    //console.log(nickname.substring(0, nickname.length-8));
                 }
-                delete socket_ids[nickname];
             }
+
+            //console.log(session);
+            //console.log(req.userid);
         });
     });
 

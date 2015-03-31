@@ -7,6 +7,7 @@
     };
 </script>
 
+
 <script src="js/alertify.min.js"></script>
 <link rel="stylesheet" href="stylesheets/alertify.core.css"/>
 <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
@@ -16,39 +17,42 @@
 
     function RoomJoin(roomname, game, playerCount) {
         socket.emit('check_room_info', roomname);
-        alertify.confirm('Are you sure you want to enter the room?', function (e) {
-            if (e) {
-                socket.on('check_room_info_post', function (data) {
-                    if (data === false) {
-                        location.href = "/GAMEROOMLIST";
-                    } else if (playerCount < data.currentPlayer + 1) {
-                        alertify.alert('The room is full', function () {
-                            //after clicking OK
-                        });
+        socket.on('check_room_info_post', function (data) {
+            //console.log(data.currentPlayer);
+            if (data === false) {
+                location.href = "/GAMEROOMLIST";
+            } else {
+                alertify.confirm('Are you sure you want to enter the room?', function (e) {
+                    if (e) {
+                        if (playerCount < data.currentPlayer + 1) {
+                            alertify.alert('The room is full', function () {
+                                //after clicking OK
+                            });
+                        } else {
+                            var oForm = document.createElement('form');
+                            oForm.method = "post";
+                            oForm.action = "/JOIN_ROOM";
+                            var objs = document.createElement("input");
+                            objs.setAttribute('type', 'hidden');
+                            objs.setAttribute('name', 'roomname');
+                            objs.setAttribute('value', roomname);
+                            oForm.appendChild(objs);
+                            var objs1 = document.createElement("input");
+                            objs1.setAttribute('type', 'hidden');
+                            objs1.setAttribute('name', 'game');
+                            objs1.setAttribute('value', game);
+                            oForm.appendChild(objs1);
+                            var objs2 = document.createElement("input");
+                            objs2.setAttribute('type', 'hidden');
+                            objs2.setAttribute('name', 'playerCount');
+                            objs2.setAttribute('value', playerCount);
+                            oForm.appendChild(objs2);
+                            oForm.submit();
+                        }
                     } else {
-                        var oForm = document.createElement('form');
-                        oForm.method = "post";
-                        oForm.action = "/JOIN_ROOM";
-                        var objs = document.createElement("input");
-                        objs.setAttribute('type', 'hidden');
-                        objs.setAttribute('name', 'roomname');
-                        objs.setAttribute('value', roomname);
-                        oForm.appendChild(objs);
-                        var objs1 = document.createElement("input");
-                        objs1.setAttribute('type', 'hidden');
-                        objs1.setAttribute('name', 'game');
-                        objs1.setAttribute('value', game);
-                        oForm.appendChild(objs1);
-                        var objs2 = document.createElement("input");
-                        objs2.setAttribute('type', 'hidden');
-                        objs2.setAttribute('name', 'playerCount');
-                        objs2.setAttribute('value', playerCount);
-                        oForm.appendChild(objs2);
-                        oForm.submit();
+                        //after clicking Cancel
                     }
                 });
-            } else {
-                //after clicking Cancel
             }
         });
     }
@@ -79,6 +83,14 @@
      */
     function CreateRoom() {
         location.href = "/CREATEROOM";
+        /*jQuery.ajax({
+         type: "POST",
+         url: "../CREATEROOM",
+         data: "<%= username %>",
+         cache: false,
+         success: function (response) {
+         }
+         });*/
     }
 
     $(function () {

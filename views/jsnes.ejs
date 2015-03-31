@@ -6,8 +6,13 @@
 
 <div>
     <br/>
-
-    <div id="emulator"></div>
+    <div style="display: flex;">
+        <div style="margin-top:50px; float: left;"><image style="width:250px; height:350px;" src="Key.PNG"></image></div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <div style="margin: auto;" id="emulator"></div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <div style="margin-top:150px; float:right;"><button style="width:80px;height:50px;" onclick="goBack();">ROOM OUT</button></div>
+    </div>
     <br/>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/peer.js" type="text/javascript" charset="utf-8"></script>
@@ -25,6 +30,12 @@
     <script src="source/rom.js" type="text/javascript" charset="utf-8"></script>
     <script src="source/ui.js" type="text/javascript" charset="utf-8"></script>
 
+    <script>
+        function goBack(){
+            history.go(-1);
+        }
+    </script>
+
     <script type="text/javascript" charset="utf-8">
         var socket = io.connect();
         var peer;
@@ -39,7 +50,7 @@
         });
         //peer open
         peer.on('open', function (id) {
-            console.log("1P 고유 아이디 생성 : " + id);
+            //console.log("1P 고유 아이디 생성 : " + id);
             socket.emit('save_1p_peer_id', {peer_1p_id: id});
         });
 
@@ -61,7 +72,7 @@
         var roomname = "<%= roomname %>";
         var userid = "<%= username %>";
         var game = "<%= game %>";
-        var playerCount = "<%= playerCount %>"
+        var playerCount = "<%= playerCount %>";
 
         $(function () {
             nes = new JSNES({
@@ -259,6 +270,14 @@
         history.pushState(null, null, location.href);
         window.onpopstate = function (event) {
             location.href = "/GAMEROOMLIST"
+            /*jQuery.ajax({
+             type: "POST",
+             url: "../GAMEROOMLIST",
+             data: "<%= username %>",
+             cache: false,
+             success: function (response) {
+             }
+             });*/
         };
 
     </script>

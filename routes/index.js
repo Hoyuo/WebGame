@@ -118,6 +118,17 @@ exports.logout = function (req, res) {
     });
 };
 
+exports.fireLogout = function (userId) {
+    Member.update({username: userId}, {$set: {weblogin: false}}, function (err, updated) {
+        if (err || !updated) {
+            console.log('logout 실패');
+        }
+        else {
+            console.log('logout 성공');
+        }
+    });
+};
+
 //회원가입페이지
 exports.sign_up = function (req, res) {
     res.status(200);
