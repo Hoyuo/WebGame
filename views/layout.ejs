@@ -3,17 +3,16 @@
     <title><%= title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src='http://code.jquery.com/jquery-2.1.3.min.js'></script>
-    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'></script>
-    <link rel='stylesheet' type='text/css'
-          href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'/>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/css/bootstrap.min.css">
     <link rel='stylesheet' type='text/css' href='stylesheets/style.css'/>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <style>
         body {
-            padding: 50px 0px 0px 0px;
+            padding: 100px 0px 0px 0px;
             background: #000080 fixed;
-            -webkit-font-smoothing: antialiased;
+            webkit-font-smoothing: antialiased;
             font-family: emu;
         }
 
@@ -37,10 +36,10 @@
 </head>
 
 <body>
-<div style="padding-left: 100px; padding-right: 100px">
-    <div class="navbar navbar-default navbar-fixed-top" style="background-color: #000080">
-        <a class="navbar-brand" href="/" style="margin-left: 15px; color:#FFF; font-family:emu"> Old Game</a>
-        <ul class="nav navbar-nav pull-right" style="margin:4px;">
+<div style="padding-left: 50px; padding-right: 50px">
+    <div class="navbar navbar-default navbar-fixed-top" style="background-color: #000080; min-width: 1000px">
+        <a class="navbar-brand" href="/" style="margin-left: 15px; color:#FFF; font-family:emu; width:300px"> Old Game</a>
+        <ul class="nav navbar-nav pull-right" style="margin:4px; width:500px">
             <% if(login == 'login'){ %>
             <font color="white">Welcome, <%= username %>&nbsp&nbsp&nbsp&nbsp&nbsp</font>
             <a href="/LOGOUT" class="btn btn-primary navbar-btn btn-small"
@@ -50,25 +49,29 @@
         </ul>
     </div>
 
-    <div style="background: #000080">
-        <div style="margin-top: 10px; padding-left: 100px; padding-right: 100px">
+    <center>
+    <div style="background: #000080; width:1000px; height:auto">
+        <div style="margin-top: 10px; padding-left: 10px; padding-right: 10px">
             <div style="width:100%; height:16px"></div>
-            <font style="text-align: center" size="4" color="white">Welcome to Old Game</font>
 
-            <div style="width:100%; height:16px"></div>
             <%- body %>
+
             <br/>
+            <div style="width:100%; height:5px"></div>
             <hr/>
 
             <font color=#FFF>
                 <center>Samsung Software Membership</center>
             </font>
 
-            <div style="width:100%; height:20px"></div>
+            <div style="width:100px; height:20px"></div>
         </div>
     </div>
+    </center>
 
-    <div style="height:15px; background-color:#ffffff"></div>
+    <center>
+    <div style="height:15px; background-color:#ffffff; width:1000px"></div>
+    </center>
 </div>
 </body>
 
