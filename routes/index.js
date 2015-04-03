@@ -89,10 +89,12 @@ exports.moblie_login_post = function (req, res) {
         if (member != null) {
             res.status(200);
             res.json({status: 200, username: req.username});
+            console.log('moblie', req.username, '성공');
         }
         else {
-            res.status(100);
+            res.status(200);
             res.json({status: 100, username: req.username});
+            console.log('moblie', req.username, '실패');
         }
     });
 };
@@ -167,7 +169,7 @@ exports.sign_up_post = function (req, res) {
         Member.findOne({username: curUsername}, function (err, member) {
             if (err) return handleError(err);
 
-            if (member == null) {
+            if (member === null) {
                 var myMember = new Member({
                     username: curUsername,
                     password: req.password,

@@ -10,7 +10,7 @@ server.listen(3000);
 var engine = require('ejs-locals');
 var path = require('path');
 var bodyParser = require('body-parser');
-var session = require('cookie-session');
+var session = require('express-session');
 var favicon = require('serve-favicon');
 var url = require('url');
 
@@ -59,7 +59,7 @@ app.get('/SIGN_UP', routes.sign_up);
 
 //회원가입
 app.post('/SIGN_UP', function (req, res, next) {
-    if (req.body.password == req.body.confirm_password) {
+    if (req.body.password === req.body.confirm_password) {
         req.username = req.body.username;
         req.password = myHash(req.body.password);
         next();
@@ -163,7 +163,7 @@ function getRoomlist(data) {
 //no_of_persons: data[key].length
 function getRoomSocketId(nickname) {
     for (var socketid in socket_ids) {
-        if (socketid == nickname) {
+        if (socketid === nickname) {
             return socket_ids[socketid];
         }
     }
@@ -206,10 +206,12 @@ io.sockets.on('connection', function (socket) {
             var playerlist = io.sockets.manager.rooms["/" + room.roomname];
 
             if (room !== -1) {
-                if (playerlist[0] === room.id)
+                if (playerlist[0] === room.id) {
                     io.sockets.in(room.room).emit('btn_1', data);
-                else
+                }
+                else {
                     io.sockets.in(room.room).emit('btn_2', data);
+                }
             }
         });
     });
@@ -283,8 +285,8 @@ io.sockets.on('connection', function (socket) {
             //방 정보 해제
 
             if (nickname != undefined) {
-                var chk = nickname.substring(nickname.length-2, nickname.length);
-                if( chk != '2p' ){
+                var chk = nickname.substring(nickname.length - 2, nickname.length);
+                if (chk != '2p') {
 
                     if (nickname.indexOf('_webPage') != -1) {
                         socket.get('room', function (error, room) {
@@ -294,13 +296,11 @@ io.sockets.on('connection', function (socket) {
                         });
                     }
                     delete socket_ids[nickname];
-                    routes.fireLogout(nickname.substring(0, nickname.length-8));
+                    routes.fireLogout(nickname.substring(0, nickname.length - 8));
                     //console.log(nickname.substring(0, nickname.length-8));
                 }
+                delete socket_ids[nickname];
             }
-
-            //console.log(session);
-            //console.log(req.userid);
         });
     });
 
