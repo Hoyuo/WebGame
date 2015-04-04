@@ -1,3 +1,4 @@
+//DataBase
 //DB Connection
 var mongoose = require('mongoose');
 var url = require('url');
@@ -10,260 +11,198 @@ var db = mongoose.connection;
 
 //creates DB schma for MongoDB
 var memberSchema = mongoose.Schema({
-    username: 'string',
-    password: 'string',
-    uuid: 'string',
-    weblogin: 'boolean',
-    applogin: 'boolean',
-    socketlogin: 'boolean'
+  username: 'string',
+  password: 'string',
+  uuid: 'string'
 });
 
 //compiles our schema into model
 var Member = mongoose.model('Member', memberSchema);
 
-//route functions
-// 메인페이지
-exports.index = function (req, res) {
-    if (req.session.login === 'login') {
-        res.redirect('/GAMEROOMLIST');
-        return;
+
+////////////////////////////////////////////////////////////////
+
+
+var express = require('express');
+var router = express.Router();
+
+var roomList = [];
+var roomSqu = 1;
+var loginUser = [];
+var loginCnt = 0;
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  var errCode = req.query.errCode;
+
+  if( errCode == null ){
+    errCode = 0;
+  }
+
+  if( req.session.user_id == null ) {
+    res.render('login', {
+      title: 'Return 1990 - Main',
+      login: 'logout',
+      username: '',
+      errCode: errCode
+    });
+  }
+  else{
+    res.redirect('/ROOM_LIST');
+  }
+});
+
+router.get('/SIGN_UP', function(req, res, next){
+  res.render('sign_up', {
+    title: 'Return 1990 - SignUp',
+    login: 'logout',
+    username: ''
+  });
+});
+
+router.get('/ROOM_LIST', function(req, res, next){
+  var errCode = req.query.errCode;
+
+  if( errCode == null ){
+    errCode = 0;
+  }
+
+  if( req.session.user_id == null ){
+    res.redirect('/');
+  }
+  else {
+    res.render('room_list', {
+      title: 'Return 1990 - GameRoomList',
+      login: 'login',
+      username: req.session.user_id,
+      roomList: roomList,
+      errCode: errCode
+    });
+  }
+});
+
+router.get('/CHECKROOMNAME', function(req, res, next){
+  var roomName = req.query.roomName;
+  var result = false;
+
+  for(var i=0; i<roomList.length; i++){
+    if( roomList[i].roomName == roomName ){
+      result = true;
     }
-    res.status(200);
+  }
 
-    res.render('index', {
-        title: 'OldGame',
-        page: 0,
-        login: 'logout',
-        username: '',
-        check: 0
-    });
+  if( result == true ){
+    res.end('true');
+  }
+  else{
+    res.end('false');
+  }
+});
+
+router.get('/1P_OUT_ROOM', function(req, res, next){
+  var roomNum = req.query.roomNum;
+
+  delete roomList[roomNum];
+
+  res.redirect('/ROOM_LIST');
+});
+
+
+var crypto = require('crypto');
+var myHash = function myHash(key) {
+  var hash = crypto.createHash('sha1');
+  hash.update(key);
+  return hash.digest('hex');
 };
 
-//로그인페이지
-exports.login_post = function (req, res) {
-    Member.findOne({username: req.username, password: req.password}, function (err, member) {
-        if (member !== null) {
-            if (member.weblogin === false) {
-                Member.update({username: member.username}, {$set: {weblogin: true}}, function (err) {
-                });
-                req.session.login = 'login';
-                req.session.username = req.username;
-                res.status(200);
-                res.redirect('/GAMEROOMLIST');
-            } else {
-                res.render('index', {
-                    title: 'OldGame',
-                    page: 0,
-                    login: 'logout',
-                    username: '',
-                    check: 1
-                });
-            }
-        } else {
-            res.render('index', {
-                title: 'OldGame',
-                page: 0,
-                login: 'logout',
-                username: '',
-                check: 2
-            });
-        }
-    });
-};
 
-//게임방리스트페이지
-exports.GAMEROOMLIST = function (req, res) {
-    if (req.session.login !== 'login') {
-        res.redirect('/');
-        return;
+/* POST Home Page */
+router.post('/LOGIN', function(req, res, next){
+  Member.findOne({username: req.body.user_id}, function (err, member) {
+    if( member === null ){
+      res.redirect('/?errCode=1');
     }
-    res.render('gameroomlist', {
-        title: 'OldGame',
-        login: req.session.login,
-        username: req.session.username
-    });
-};
+    else{
+      if( member.password !== myHash(req.body.user_pw) ){
+        res.redirect('/?errCode=2');
+      }
+      else{
+        var result = 0;
 
-exports.moblie_login_post = function (req, res) {
-    Member.findOne({username: req.username, password: req.password}, function (err, member) {
-        if (member != null) {
-            res.status(200);
-            res.json({status: 200, username: req.username});
-            console.log('moblie', req.username, '성공');
+        for(var i=0; i<loginUser.length; i++){
+          if( loginUser[i] == req.body.user_id ){
+            result = 1;
+          }
         }
-        else {
-            res.status(200);
-            res.json({status: 100, username: req.username});
-            console.log('moblie', req.username, '실패');
+
+        if( result == 0 ){
+          req.session.user_id = req.body.user_id;
+          loginUser[loginCnt++] = req.body.user_id;
+          res.redirect('/ROOM_LIST');
         }
-    });
-};
-
-//로그아웃페이지
-//todo uncaught Error: Syntax error, unrecognized expression: 애러 처리 해야함
-exports.logout = function (req, res) {
-    Member.update({username: req.session.username}, {$set: {weblogin: false}}, function (err, updated) {
-        if (err || !updated) {
-            console.log('logout 실패');
-            if (req.session.login === 'logout') {
-                res.status(200);
-                res.redirect('/');
-            }
+        else{
+          res.redirect('/?errCode=3');
         }
-        else {
-            console.log('logout 성공');
-            req.session.login = '';
-            req.session.name = '';
-            res.status(200);
-            res.redirect('/');
-        }
-    });
-};
-
-exports.fireLogout = function (userId) {
-    Member.update({username: userId}, {$set: {weblogin: false}}, function (err, updated) {
-        if (err || !updated) {
-            console.log('logout 실패');
-        }
-        else {
-            console.log('logout 성공');
-        }
-    });
-};
-
-//회원가입페이지
-exports.sign_up = function (req, res) {
-    res.status(200);
-
-    res.render('sign_up', {
-        title: 'Sign up',
-        page: 1,
-        login: req.session.login,
-        username: req.session.username,
-        existingUsername: 'null'
-    });
-};
-
-//회원가입체크(중복아이디 존재 여부)
-exports.checkUserName = function (req, res) {
-    var uri = url.parse(req.url, true);
-    Member.findOne({username: uri.query.id}, function (err, member) {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        if (member != null) {
-            res.end('true');
-        }
-        else {
-            res.end('false');
-        }
-    });
-};
-
-//회원가입진행
-exports.sign_up_post = function (req, res) {
-    res.status(200);
-
-    var curUsername = req.username;
-    if (curUsername == "") {
-        res.redirect('/SIGN_UP');
-    } else {
-        Member.findOne({username: curUsername}, function (err, member) {
-            if (err) return handleError(err);
-
-            if (member === null) {
-                var myMember = new Member({
-                    username: curUsername,
-                    password: req.password,
-                    uuid: 0,
-                    weblogin: 0,
-                    applogin: 0,
-                    socketlogin: 0
-                });
-                myMember.save(function (err, data) {
-                    if (err) {
-                    }
-                });
-                res.redirect('/');
-            }
-            else {
-                res.redirect('/SIGN_UP');
-            }
-        });
+      }
     }
-};
+  });
+});
 
-//방생성페이지
-exports.createroom = function (req, res) {
-    if (req.session.login !== 'login') {
-        res.redirect('/');
-        return;
+router.post('/CREATE_ROOM', function(req, res, next){
+  res.render('create_room', {
+    title: 'Return 1990 - Create Room',
+    username: req.session.user_id,
+    login: 'login'
+  });
+});
+
+router.post('/1P_GAME_ROOM', function(req, res, next){
+  roomList[roomSqu] = {
+    roomNum: roomSqu,
+    roomName: req.body.roomname,
+    gameName: req.body.insert_game,
+    maxPlayer: req.body.insert_player,
+    currentPlayer: 1,
+    peer_1p_id: null,
+    peer_2p_id: null,
+    user_1p_id: req.session.user_id,
+    user_2p_id: null
+  };
+
+  roomSqu++;
+
+  res.render('1p_game_room', {
+    title: 'Return 1990 - 1PGameRoom',
+    login: 'login',
+    username: req.session.user_id,
+    roomInfo: roomList[roomSqu-1]
+  });
+});
+
+router.post('/2P_GAME_ROOM', function(req, res, next){
+  var room = roomList[req.body.roomNum];
+
+  if( room.maxPlayer == '1' ){
+    res.redirect('/ROOM_LIST?errCode=1');
+  }
+  else{
+    if( room.currentPlayer == 2 ){
+      res.redirect('/ROOM_LIST?errCode=2');
     }
+    else{
+      room.currentPlayer = 2;
+      room.user_2p_id = req.session.user_id;
 
-    res.render('createroom', {
-        title: 'OldGame',
-        page: 2,
-        login: req.session.login,
-        username: req.session.username
-    });
-};
-
-//방이름체크
-exports.checkRoomName = function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    if (req.ret === true) {
-        res.end('true');
-    } else {
-        res.end('false');
+      res.render('2p_game_room', {
+        title: 'Return 1990 - 2PGameRoom',
+        login: 'login',
+        username: req.session.user_id,
+        roomInfo: roomList[room.roomNum]
+      });
     }
-}
+  }
+});
 
-//방생성진행
-exports.createroom_post = function (req, res) {
-    if (req.session.login !== 'login') {
-        res.redirect('/');
-        return;
-    }
-
-    if (req.roomname === undefined) {
-        res.redirect('/');
-        return;
-    }
-
-    res.render('jsnes', {
-        title: 'OldGame',
-        page: 3,
-        login: req.session.login,
-        username: req.session.username,
-        roomname: req.roomname,
-        game: req.game,
-        playerCount: req.playerCount
-    });
-};
-
-//방입장페이지
-exports.joinRoom = function (req, res) {
-    if (req.session.login !== 'login') {
-        res.redirect('/');
-        return;
-    }
-
-    res.render('joinroom', {
-        title: 'OldGame',
-        page: 4,
-        login: req.session.login,
-        username: req.session.username,
-        roomname: req.roomname,
-        game: req.game,
-        playerCount: req.playerCount,
-        peer_1p_id: req.peer_1p_id
-    });
-};
-
-
-exports.checkid = function (userId, uuid) {
-    Member.findOne({username: userId}, function (err, member) {
-        if (member != null) {
-            Member.update({uuid: uuid}, function (err) {
-            });
-        }
-    });
-};
+module.exports = router;
+module.exports.roomList = roomList;
+module.exports.loginUser = loginUser;

@@ -1,0 +1,100 @@
+<% layout('layout') %>
+
+<script>
+    history.pushState(null, null, location.href);
+    window.onpopstate = function (event) {
+        history.go(1);
+    };
+</script>
+
+<script src="js/alertify.min.js"></script>
+<link rel="stylesheet" href="stylesheets/alertify.core.css"/>
+<link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
+<script src="/socket.io/socket.io.js"></script>
+
+<style>
+    #rooms tr:hover{
+        background-color: darkgrey;
+    }
+</style>
+
+<script>
+    var socket = io.connect();
+
+    $(function () {
+        var errCode = '<%= errCode %>';
+
+        if( errCode == 1 || errCode == 2 ){
+            alertify.alert('Room is Full.', function () {
+                //after clicking OK
+            });
+        }
+        else{
+            socket.emit('save_user_id', {
+               user_id: '<%= username %>'
+            });
+        }
+    });
+
+    socket.emit('disconnect', {
+
+    });
+</script>
+
+<script>
+    function joinRoom(roomNum){
+        alertify.confirm('Are you sure you want to enter the room?', function (e) {
+            if(e) {
+                var oForm = document.createElement('form');
+                oForm.method = "POST";
+                oForm.action = "/2P_GAME_ROOM";
+                var objs = document.createElement("input");
+                objs.setAttribute('type', 'hidden');
+                objs.setAttribute('name', 'roomNum');
+                objs.setAttribute('value', roomNum);
+                oForm.appendChild(objs);
+                oForm.submit();
+            }
+            else{
+
+            }
+        });
+    }
+</script>
+
+<div style="width:100%; height: auto">
+    <div class="col-xs-2" align="left">
+        <form>
+            <input type="hidden" name="user_id" value="<%= username %>"/>
+            <button type="submit" formmethod="POST" formaction="/CREATE_ROOM" style="background-color: #000080; color: #FFF">Create</button>
+        </form>
+    </div>
+    <div class="modal-content col-xs-10">
+        <div class="modal-header">
+            <h4 class="modal-title">Room List</h4>
+        </div>
+
+       <table id="gamelist" class="table table-hover">
+            <thead>
+            <tr>
+                <th class="col-xs-1"> NUMBER </th>
+                <th class="col-xs-7"> ROOMNAME </th>
+                <th class="col-xs-3"> GAME </th>
+                <th class="col-xs-1"> 1P/2P </th>
+            </tr>
+            <div id="rooms">
+            <% for(var i=0; i<roomList.length; i++){ %>
+                <% if(roomList[i] != undefined){%>
+            <tr onclick="joinRoom(<%= roomList[i].roomNum %>)">
+               <td><%= roomList[i].roomNum %></td>
+                <td><%= roomList[i].roomName %></td>
+                <td><%= roomList[i].gameName %></td>
+                <td><%= roomList[i].maxPlayer + 'P' %></td>
+                <% } %>
+                <% }%>
+            </tr>
+            </div>
+            </thead>
+        </table>
+    </div>
+</div>
