@@ -6,6 +6,7 @@
 
 <form class="form-horizontal">
     <!--RoomName-->
+    <form method="POST" action="/1P_GAME_ROOM">
     <div class="form-group">
         <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
 
@@ -67,12 +68,20 @@
     <!--RoomCreateButton-->
     <div class="form-group" style ="text-align: left">
         <div class="col-sm-offset-3 col-sm-9">
-            <button type="button" class="btn btn-default" onclick="CreateRoomPost()">Create</button>
+            <button type="submit" formmethod="POST" formaction="/1P_GAME_ROOM" class="btn btn-default">Create</button>
         </div>
     </div>
+    </form>
 </form>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
+    var socket = io.connect();
+
+    socket.emit('disconnect', {
+
+    });
+
     var check = false;
 
     function checkRoomName() {
@@ -85,8 +94,8 @@
             });
         }
         else {
-            $.get('/CHECKROOMNAME?id=' + roomname, function (data, err) {
-                if (data === 'true') {
+            $.get('/CHECKROOMNAME?roomName=' + roomname.trim(), function (data, err) {
+                if (data == 'true') {
                     $('#roomname').val('');
                     alertify.alert('RoomName already exists. Please enter another RoomName', function () {
                         //after clicking OK
@@ -102,43 +111,7 @@
             });
         }
     }
-    function CreateRoomPost() {
-        var insert_player = $('#insert_player').val();
-        var game = $('#insert_game').val();
-        if (check === false) {
-            alertify.alert('Please Check RoomName!', function () {
-                //after clicking OK
-            });
-        } else if (game === 'select') {
-            alertify.alert('Please Game Select!', function () {
-                //after clicking OK
-            });
-        } else if (insert_player === 'select') {
-            alertify.alert('Please 1P/2P Select', function () {
-                //after clicking OK
-            });
-        } else {
-            var oForm = document.createElement('form');
-            oForm.method = "post";
-            oForm.action = "/ROOM_ADMIN";
-            var objs = document.createElement("input");
-            objs.setAttribute('type', 'hidden');
-            objs.setAttribute('name', 'roomname');
-            objs.setAttribute('value', $('#roomname').val().toLowerCase());
-            oForm.appendChild(objs);
-            var objs1 = document.createElement("input");
-            objs1.setAttribute('type', 'hidden');
-            objs1.setAttribute('name', 'game');
-            objs1.setAttribute('value', $('#insert_game').val());
-            oForm.appendChild(objs1);
-            var objs2 = document.createElement("input");
-            objs2.setAttribute('type', 'hidden');
-            objs2.setAttribute('name', 'playerCount');
-            objs2.setAttribute('value', $('#insert_player').val());
-            oForm.appendChild(objs2);
-            oForm.submit();
-        }
-    }
+
     function checkscript1(){
         var script = $('#roomname').val();
 
@@ -152,14 +125,7 @@
 
     history.pushState(null, null, location.href);
     window.onpopstate = function (event) {
-        location.href = "/GAMEROOMLIST";
-        /*jQuery.ajax({
-         type: "POST",
-         url: "../GAMEROOMLIST",
-         data: "<%= username %>",
-         cache: false,
-         success: function (response) {
-         }
-         });*/
+        location.href = "/ROOM_LIST";
+        //history.go(-1);
     };
 </script>

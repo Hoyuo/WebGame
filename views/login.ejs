@@ -5,24 +5,27 @@
 <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 
 <script>
-    history.pushState(null, null, location.href);
-    window.onpopstate = function (event) {
-        history.go(1);
-    };
-
-    var check = 0;
-    check = <%= check %>;
-    if (check === 1) {
-        alertify.alert('Your Email is already logged in.', function () {
-            //after clicking OK
-            $('#password').val('');
-        });
-    } else if (check === 2) {
-        alertify.alert('Plases Check Your Email and Password', function () {
-            //after clicking OK
-            $('#password').val('');
-        });
-    }
+    $(function () {
+        var errCode = '<%= errCode %>';
+        if( errCode == 1 ){
+            alertify.alert('You are not a member.', function () {
+                //after clicking OK
+                $('#password').val('');
+            });
+        }
+        else if( errCode == 2 ){
+            alertify.alert('Plases Check Your Email and Password.', function () {
+                //after clicking OK
+                $('#password').val('');
+            });
+        }
+        else if( errCode == 3 ){
+            alertify.alert('Your Email is already logged in.', function () {
+                //after clicking OK
+                $('#password').val('');
+            });
+        }
+    });
 </script>
 
 <div class="modal-content">
@@ -35,12 +38,12 @@
             <fieldset>
                 <div class="form-group"  style ="text-align: left">
                     <label >E-mail</label>
-                    <input input type="email" class="form-control" name="username" id="user" placeholder="Email"
+                    <input input type="email" class="form-control" name="user_id" id="user" placeholder="Email"
                            maxlength="64" onkeydown="checkscript1()">
                 </div>
                 <div class="form-group" style ="text-align: left">
                     <label>Password</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Password"
+                    <input type="password" class="form-control" name="user_pw" id="password" placeholder="Password"
                            maxlength="16" onkeydown="checkscript2()">
                 </div>
             </fieldset>
@@ -49,7 +52,7 @@
             <button type="submit" class="btn btn-primary" style="background-color: #000080">
                 Login
             </button>
-            <button type="button" onclick="sign_up_redirect()" class="btn btn-primary"
+            <button type="submit" formmethod="GET" formaction="/SIGN_UP" class="btn btn-primary"
                     style="background-color: #000080">Sign Up
             </button>
         </div>

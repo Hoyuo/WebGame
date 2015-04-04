@@ -1,17 +1,14 @@
 <% layout('layout') %>
 
 <div class="modal-content" style ="text-align: left">
-    roomName : <%= roomname %>
+    roomName : <%= roomInfo.roomName %>
 </div>
 
 <div>
     <br/>
     <div style="display: flex;">
-        <div style="margin-top:50px; float: left;"><image style="width:250px; height:350px;" src="Key.PNG"></image></div>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <div style="margin: auto;" id="emulator"></div>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <div style="margin-top:150px; float:right;"><button style="width:80px;height:50px;" onclick="goBack();">ROOM OUT</button></div>
+        <div style="margin-top:50px; float: left;"><image style="max-width:250px; max-height:350px;" src="Key.PNG"></image></div>
+        <div style="max-width: 50%; height:auto;margin: auto;" id="emulator"></div>
     </div>
     <br/>
     <script src="/socket.io/socket.io.js"></script>
@@ -40,6 +37,12 @@
         var socket = io.connect();
         var peer;
 
+        var nes;
+        var roomNum = "<%= roomInfo.roomNum %>";
+        var roomname = "<%= roomInfo.roomName %>";
+        var game = "<%= roomInfo.gameName %>";
+        var playerCount = "<%= roomInfo.maxPlayer %>";
+
         window.turnserversDotComAPI.iceServers(function (data) {
             peer = new Peer({
                         key: 'kkgy1v6piamaq0k9',
@@ -50,8 +53,12 @@
         });
         //peer open
         peer.on('open', function (id) {
-            //console.log("1P 고유 아이디 생성 : " + id);
-            socket.emit('save_1p_peer_id', {peer_1p_id: id});
+            console.log("1P 고유 아이디 생성 : " + id);
+            console.log("roomNum : " + roomNum);
+            socket.emit('set_1p_peer_id', {
+                roomNum: roomNum,
+                peer_1p_id: id
+            });
         });
 
         //peer 연결
@@ -61,6 +68,75 @@
                     imgSrc: nes.ui.screenshot()
                 });
             }, 1000 / 30);
+
+            conn.on('data', function(data){
+                var flag = data.flag;
+                var key = data.key;
+
+                console.log(flag);
+                console.log(key);
+
+                switch (key) {
+                    case 'A':
+                        nes.keyboard.keyDown({keyCode: 103});
+                        nes.frame();
+                        nes.keyboard.keyUp({keyCode: 103});
+                        break;
+                    case 'B':
+                        nes.keyboard.keyDown({keyCode: 105});
+                        nes.frame();
+                        nes.keyboard.keyUp({keyCode: 105});
+                        break;
+                    case 'select':
+                        nes.keyboard.keyDown({keyCode: 99});
+                        nes.frame();
+                        nes.keyboard.keyUp({keyCode: 99});
+                        break;
+                    case 'start':
+                        nes.keyboard.keyDown({keyCode: 97});
+                        nes.frame();
+                        nes.keyboard.keyUp({keyCode: 97});
+                        break;
+                    case 'up':
+                        if (flag == 0) {
+                            nes.keyboard.keyDown({keyCode: 104});
+                            nes.keyboard.keyPress({keyCode: 104});
+                        } else {
+                            nes.keyboard.keyUp({keyCode: 104});
+                        }
+                        break;
+                    case 'right':
+                        if (flag == 0) {
+                            nes.keyboard.keyDown({keyCode: 102});
+                            nes.keyboard.keyPress({keyCode: 102});
+                        } else {
+                            nes.keyboard.keyUp({keyCode: 102});
+                        }
+                        break;
+                    case 'left':
+                        if (flag == 0) {
+                            nes.keyboard.keyDown({keyCode: 100});
+                            nes.keyboard.keyPress({keyCode: 100});
+                        } else {
+                            nes.keyboard.keyUp({keyCode: 100});
+                        }
+                        break;
+                    case 'down':
+                        if (flag == 0) {
+                            nes.keyboard.keyDown({keyCode: 98});
+                            nes.keyboard.keyPress({keyCode: 98});
+                        } else {
+                            nes.keyboard.keyUp({keyCode: 98});
+                        }
+                        break;
+                    default :
+                        break;
+                }
+            });
+        });
+
+        peer.on('data', function(data){
+
         });
 
         //peer error
@@ -68,11 +144,7 @@
             console.log(err.message);
         });
 
-        var nes;
-        var roomname = "<%= roomname %>";
-        var userid = "<%= username %>";
-        var game = "<%= game %>";
-        var playerCount = "<%= playerCount %>";
+
 
         $(function () {
             nes = new JSNES({
@@ -119,13 +191,7 @@
         });
 
         socket.on('new', function () {
-            socket.emit('join', {'roomname': roomname});
             socket.emit('webSingUp', userid + '_webPage');
-            socket.emit('roominfo', {
-                'roomname': roomname,
-                'game': game,
-                'playerCount': playerCount
-            })
         });
 
         //1P 버튼
@@ -266,18 +332,14 @@
             nes.start();
         });
 
+        socket.emit('disconnect', {
+
+        });
+
         //뒤로 가기 막기
         history.pushState(null, null, location.href);
         window.onpopstate = function (event) {
-            location.href = "/GAMEROOMLIST"
-            /*jQuery.ajax({
-             type: "POST",
-             url: "../GAMEROOMLIST",
-             data: "<%= username %>",
-             cache: false,
-             success: function (response) {
-             }
-             });*/
+            location.href = "/1P_OUT_ROOM?roomNum="+roomNum;
         };
 
     </script>
