@@ -6,10 +6,15 @@
 
 <div style="text-align: center">
     <br/>
-    <div style="display: flex;">
-        <div style="margin-top:50px; float: left;"><image style="width:250px; height:350px;" src="Key.PNG"></image></div>
 
-        <div stlye="margin:auto;"><image id="game_screen" width="512" height="480"></image></div>
+    <div style="display: flex;">
+        <div style="margin-top:50px; float: left;">
+            <image style="width:250px; height:350px;" src="Key.PNG"></image>
+        </div>
+
+        <div stlye="margin:auto;">
+            <image id="game_screen" width="512" height="480"></image>
+        </div>
     </div>
     <br/>
 
@@ -22,7 +27,7 @@
     <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 
     <script>
-        function goBack(){
+        function goBack() {
             history.go(-1);
         }
     </script>
@@ -75,7 +80,6 @@
             var canvas = document.getElementById('game_screen');
             canvas.src = data.imgSrc;
         });
-
 
 
         //peer connection
@@ -131,17 +135,17 @@
 
             if (flag === 0) {
                 /*socket.emit('btn_web', {
-                    key: send
-                });*/
+                 key: send
+                 });*/
                 dataConnection.send({
                     key: send
                 });
             }
             else if (flag === 1) {
                 /*socket.emit('pad_web', {
-                    key: send,
-                    flag: 0
-                });*/
+                 key: send,
+                 flag: 0
+                 });*/
                 dataConnection.send({
                     key: send,
                     flag: 0
@@ -173,11 +177,11 @@
                     break;
             }
 
-            if (flag === 1){
+            if (flag === 1) {
                 /*socket.emit('pad_web', {
-                    key: send,
-                    flag: 1
-                });*/
+                 key: send,
+                 flag: 1
+                 });*/
                 dataConnection.send({
                     key: send,
                     flag: 1
@@ -190,12 +194,10 @@
                 'roomNum': roomNum,
                 'roomname': roomname
             });
-            socket.emit('webSingUp', userid +'_webPage_2p');
+            socket.emit('webSingUp', userid + '_webPage_2p');
         });
 
-        socket.emit('disconnect', {
-
-        });
+        socket.emit('disconnect', {});
 
         socket.on('reStart', function () {
             alertify.alert('The user has left', function () {

@@ -9,29 +9,31 @@
 
     <form method="post" action="/SIGN_UP">
         <fieldset>
-            <legend style ="text-align: left">Sign up</legend>
-            <div class="form-group" style ="text-align: left">
+            <legend style="text-align: left">Sign up</legend>
+            <div class="form-group" style="text-align: left">
                 <label for="exampleInputEmail">Email</label>
-                <input type="email" class="form-control" name="username" id="user" placeholder="Email" maxlength="64" onkeydown="checkscript1()">
+                <input type="email" class="form-control" name="username" id="user" placeholder="Email" maxlength="64"
+                       onkeydown="checkscript1()">
             </div>
             <center><a onclick="checkUserName()" style="width:100%; color : #FFF; background-color: #000080"
                        class="btn btn-default">Check User Name</a></center>
 
             <div style="width:100%; height: 25px"></div>
 
-            <div class="form-group" style ="text-align: left">
+            <div class="form-group" style="text-align: left">
                 <label for="exampleInputPassword">Password</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Password"
                        maxlength="16" onkeydown="checkscript2()">
             </div>
-            <div class="form-group" style ="text-align: left">
+            <div class="form-group" style="text-align: left">
                 <label for="exampleInputPassword">Confirm Password</label>
                 <input type="password" class="form-control" name="confirm_password" id="confirm_password"
-                       placeholder="Confirm Password" maxlength="16" onkeydown="checkscript3()" >
+                       placeholder="Confirm Password" maxlength="16" onkeydown="checkscript3()">
             </div>
             <center>
-                <button type="submit" onclick="checkPassword()" style="width:100%; color : #FFF; background-color: #000080"
-                        class="btn btn-default" >Submit
+                <button type="submit" onclick="checkPassword()"
+                        style="width:100%; color : #FFF; background-color: #000080"
+                        class="btn btn-default">Submit
                 </button>
             </center>
         </fieldset>
@@ -42,7 +44,7 @@
 <script>
     function checkUserName() {
         var username = $('#user').val();
-        var regex=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
+        var regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
 
         if (username == '') {
             alertify.alert('Please Abide by Email form.', function () {
@@ -50,7 +52,7 @@
             });
         }
 
-        else if(regex.test(username)===false){
+        else if (regex.test(username) === false) {
             alertify.alert('Please Abide by Email form.', function () {
                 //after clicking OK
                 $('#user').val('');
@@ -86,10 +88,10 @@
         }
     }
 
-    function checkscript1(){
+    function checkscript1() {
         var script = $('#user').val();
 
-        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+        if ((script.search("<") != -1) || (script.search(">") != -1)) {
             alertify.alert('cannot use < > sign', function () {
                 //after clicking OK
                 $('#user').val('');
@@ -97,10 +99,10 @@
         }
     }
 
-    function checkscript2(){
+    function checkscript2() {
         var script = $('#password').val();
 
-        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+        if ((script.search("<") != -1) || (script.search(">") != -1)) {
             alertify.alert('cannot use < > sign', function () {
                 //after clicking OK
                 $('#password').val('');
@@ -108,10 +110,10 @@
         }
     }
 
-    function checkscript3(){
+    function checkscript3() {
         var script = $('#confirm_password').val();
 
-        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+        if ((script.search("<") != -1) || (script.search(">") != -1)) {
             alertify.alert('cannot use < > sign', function () {
                 //after clicking OK
                 $('#confirm_password').val('');
