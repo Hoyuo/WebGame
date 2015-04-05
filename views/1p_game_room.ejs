@@ -1,11 +1,12 @@
 <% layout('layout') %>
 
-<div class="modal-content" style ="text-align: left">
+<div class="modal-content" style="text-align: left">
     roomName : <%= roomInfo.roomName %>
 </div>
 
 <div>
     <br/>
+
     <div style="display: flex;">
         <div style="max-width: 50%; height:auto;margin: auto;" id="emulator"></div>
     </div>
@@ -29,7 +30,7 @@
     <script src="source/ui.js" type="text/javascript" charset="utf-8"></script>
 
     <script>
-        function goBack(){
+        function goBack() {
             history.go(-1);
         }
     </script>
@@ -71,7 +72,7 @@
                 });
             }, 1000 / 30);
 
-            conn.on('data', function(data){
+            conn.on('data', function (data) {
                 var flag = data.flag;
                 var key = data.key;
 
@@ -134,7 +135,7 @@
             });
         });
 
-        peer.on('data', function(data){
+        peer.on('data', function (data) {
 
         });
 
@@ -142,7 +143,6 @@
         peer.on('error', function (err) {
             console.log(err.message);
         });
-
 
 
         $(function () {
@@ -334,21 +334,21 @@
         });
 
 
-        socket.on('connect', function(){
-                socket.emit('save_user_id', {
-                 user_id: '<%= username %>',
-                 flag: 1
-                });
+        socket.on('connect', function () {
+            socket.emit('save_user_id', {
+                user_id: '<%= username %>',
+                flag: 1
+            });
         });
 
-        socket.on('disconnect', function(){
+        socket.on('disconnect', function () {
 
         });
 
         //뒤로 가기 막기
         history.pushState(null, null, location.href);
         window.onpopstate = function (event) {
-            location.href = "/1P_OUT_ROOM?roomNum="+roomNum;
+            location.href = "/1P_OUT_ROOM?roomNum=" + roomNum;
         };
 
     </script>
