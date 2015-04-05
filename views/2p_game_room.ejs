@@ -6,16 +6,12 @@
 
 <div style="text-align: center">
     <br/>
-
-    <div style="display: flex;">
-        <div style="margin-top:50px; float: left;">
-            <image style="width:250px; height:350px;" src="Key.PNG"></image>
-        </div>
-
-        <div stlye="margin:auto;">
-            <image id="game_screen" width="512" height="480"></image>
-        </div>
-    </div>
+    <div stlye="margin:auto;"><image id="game_screen" width="512" height="480"></image></div>
+    <br/>
+    <input type="button" value="room out" onclick="goBack()">
+    <br/>
+    <br/>
+    <img src="Key.PNG" />
     <br/>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -27,7 +23,7 @@
     <link rel="stylesheet" href="stylesheets/alertify.bootstrap.css"/>
 
     <script>
-        function goBack() {
+        function goBack(){
             history.go(-1);
         }
     </script>
@@ -69,7 +65,7 @@
         dataConnection.on('close', function () {
             //연결 해제 부분
             alertify.alert('The user has left', function () {
-                location.href = "/gameroomlist";
+                location.href = "/ROOM_LIST";
             });
 
             //console.log("Datachannel Close");
@@ -80,6 +76,7 @@
             var canvas = document.getElementById('game_screen');
             canvas.src = data.imgSrc;
         });
+
 
 
         //peer connection
@@ -135,17 +132,17 @@
 
             if (flag === 0) {
                 /*socket.emit('btn_web', {
-                 key: send
-                 });*/
+                    key: send
+                });*/
                 dataConnection.send({
                     key: send
                 });
             }
             else if (flag === 1) {
                 /*socket.emit('pad_web', {
-                 key: send,
-                 flag: 0
-                 });*/
+                    key: send,
+                    flag: 0
+                });*/
                 dataConnection.send({
                     key: send,
                     flag: 0
@@ -177,11 +174,11 @@
                     break;
             }
 
-            if (flag === 1) {
+            if (flag === 1){
                 /*socket.emit('pad_web', {
-                 key: send,
-                 flag: 1
-                 });*/
+                    key: send,
+                    flag: 1
+                });*/
                 dataConnection.send({
                     key: send,
                     flag: 1
@@ -189,21 +186,28 @@
             }
         });
 
-        socket.on('new', function () {
-            socket.emit('join', {
-                'roomNum': roomNum,
-                'roomname': roomname
+        socket.on('connect', function(){
+            socket.emit('save_user_id', {
+                user_id: '<%= username %>',
+                flag: 1
             });
-            socket.emit('webSingUp', userid + '_webPage_2p');
         });
 
-        socket.emit('disconnect', {});
+        socket.on('disconnect', function(){
+
+        });
 
         socket.on('reStart', function () {
-            alertify.alert('The user has left', function () {
-                location.href = "/gameroomlist";
+            alertify.alert('1p user has left', function () {
+                location.href = "/ROOM_LIST";
             });
         });
+
+        history.pushState(null, null, location.href);
+        window.onpopstate = function (event) {
+            location.href = "/2P_OUT_ROOM?roomNum="+roomNum;
+            //history.go(-1);
+        };
 
     </script>
 </div>

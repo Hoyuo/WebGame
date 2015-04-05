@@ -7,19 +7,19 @@
 <script>
     $(function () {
         var errCode = '<%= errCode %>';
-        if (errCode == 1) {
+        if( errCode == 1 ){
             alertify.alert('You are not a member.', function () {
                 //after clicking OK
                 $('#password').val('');
             });
         }
-        else if (errCode == 2) {
+        else if( errCode == 2 ){
             alertify.alert('Plases Check Your Email and Password.', function () {
                 //after clicking OK
                 $('#password').val('');
             });
         }
-        else if (errCode == 3) {
+        else if( errCode == 3 ){
             alertify.alert('Your Email is already logged in.', function () {
                 //after clicking OK
                 $('#password').val('');
@@ -30,18 +30,18 @@
 
 <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title" style="text-align: left">Login</h4>
+        <h4 class="modal-title" style ="text-align: left">Login</h4>
     </div>
 
     <form method="post" action="/LOGIN">
         <div class="modal-body">
             <fieldset>
-                <div class="form-group" style="text-align: left">
-                    <label>E-mail</label>
+                <div class="form-group"  style ="text-align: left">
+                    <label >E-mail</label>
                     <input input type="email" class="form-control" name="user_id" id="user" placeholder="Email"
                            maxlength="64" onkeydown="checkscript1()">
                 </div>
-                <div class="form-group" style="text-align: left">
+                <div class="form-group" style ="text-align: left">
                     <label>Password</label>
                     <input type="password" class="form-control" name="user_pw" id="password" placeholder="Password"
                            maxlength="16" onkeydown="checkscript2()">

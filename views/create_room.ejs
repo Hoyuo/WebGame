@@ -7,71 +7,70 @@
 <form class="form-horizontal">
     <!--RoomName-->
     <form method="POST" action="/1P_GAME_ROOM">
-        <div class="form-group">
-            <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
+    <div class="form-group">
+        <label for="insert-name" class="col-sm-3 control-label" style="color: #ffffff">ROOMNAME</label>
 
-            <div class="col-xs-3">
-                <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert "
-                       onkeydown="checkscript1()" style="ime-mode:disabled;">
-            </div>
+        <div class="col-xs-3">
+            <input type="text" class="form-control" name="roomname" id="roomname" placeholder="insert "
+                   onkeydown="checkscript1()" style="ime-mode:disabled;">
         </div>
-        <!--RoomNameCheckButton-->
-        <div class="form-group" style="text-align: left">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button type="button" onclick="checkRoomName()" class="btn btn-default">Check RoomName</button>
-            </div>
+    </div>
+    <!--RoomNameCheckButton-->
+    <div class="form-group" style ="text-align: left">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="button" onclick="checkRoomName()" class="btn btn-default">Check RoomName</button>
         </div>
+    </div>
 
-        <!--RoomGame-->
-        <div class="form-group">
-            <label for="insert-game" class="col-sm-3 control-label" style="color: #ffffff">Game</label>
+    <!--RoomGame-->
+    <div class="form-group">
+        <label for="insert-game" class="col-sm-3 control-label" style="color: #ffffff">Game</label>
 
-            <div class="col-xs-4">
-                <select class="form-control" id="insert_game" name="insert_game">
-                    <option value="select">select</option>
-                    <option value="Bubble Bobble">Bubble Bobble</option>
-                    <option value="Contra">Contra</option>
-                    <option value="Donkey Kong">Donkey Kong</option>
-                    <option value="Pac-Man">Pac-Man</option>
-                    <option value="Mega Man">Mega Man</option>
-                    <option value="Tennis">Tennis</option>
-                    <option value="Mario Bros">Mario Bros</option>
-                    <option value="Super Mario Bros">Super Mario Bros</option>
-                    <option value="Super Mario Bros3">Super Mario Bros3</option>
-                    <option value="Tetris">Tetris</option>
-                    <option value="Tetris 2">Tetris 2</option>
-                    <option value="Dr. Mario">Dr. Mario</option>
-                    <option value="Zelda 2">Zelda 2</option>
-                    <option value="Legend of Zelda">Legend of Zelda</option>
-                    <option value="Golf">Golf</option>
-                    <option value="Lemmings">Lemmings</option>
-                    <option value="Lifeforce">Lifeforce</option>
-                    <option value="lj65">lj65</option>
-                    <option value="croom">Croom</option>
-                </select>
-            </div>
+        <div class="col-xs-4">
+            <select class="form-control" id="insert_game" name="insert_game">
+                <option value="select">select</option>
+                <option value="Bubble Bobble">Bubble Bobble</option>
+                <option value="Contra">Contra</option>
+                <option value="Donkey Kong">Donkey Kong</option>
+                <option value="Pac-Man">Pac-Man</option>
+                <option value="Mega Man">Mega Man</option>
+                <option value="Tennis">Tennis</option>
+                <option value="Mario Bros">Mario Bros</option>
+                <option value="Super Mario Bros">Super Mario Bros</option>
+                <option value="Super Mario Bros3">Super Mario Bros3</option>
+                <option value="Tetris">Tetris</option>
+                <option value="Tetris 2">Tetris 2</option>
+                <option value="Dr. Mario">Dr. Mario</option>
+                <option value="Zelda 2">Zelda 2</option>
+                <option value="Legend of Zelda">Legend of Zelda</option>
+                <option value="Golf">Golf</option>
+                <option value="Lemmings">Lemmings</option>
+                <option value="Lifeforce">Lifeforce</option>
+                <option value="lj65">lj65</option>
+                <option value="croom">Croom</option>
+            </select>
         </div>
-        <!--RoomPlayerCount-->
-        <div class="form-group">
-            <label for="insert-player" class="col-sm-3 control-label" style="color: #ffffff">1P / 2P</label>
+    </div>
+    <!--RoomPlayerCount-->
+    <div class="form-group">
+        <label for="insert-player" class="col-sm-3 control-label" style="color: #ffffff">1P / 2P</label>
 
-            <div class="col-xs-4">
-                <select class="form-control" id="insert_player" name="insert_player">
-                    <option value="select">select</option>
-                    <option value="1">1P</option>
-                    <option value="2">2P</option>
-                </select>
-            </div>
+        <div class="col-xs-4">
+            <select class="form-control" id="insert_player" name="insert_player">
+                <option value="select">select</option>
+                <option value="1">1P</option>
+                <option value="2">2P</option>
+            </select>
         </div>
-        <br/>
-        <br/>
-        <!--RoomCreateButton-->
-        <div class="form-group" style="text-align: left">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button type="submit" formmethod="POST" formaction="/1P_GAME_ROOM" class="btn btn-default">Create
-                </button>
-            </div>
+    </div>
+    <br/>
+    <br/>
+    <!--RoomCreateButton-->
+    <div class="form-group" style ="text-align: left">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" formmethod="POST" formaction="/1P_GAME_ROOM" class="btn btn-default">Create</button>
         </div>
+    </div>
     </form>
 </form>
 
@@ -79,7 +78,15 @@
 <script>
     var socket = io.connect();
 
-    socket.emit('disconnect', {});
+    socket.on('connect', function(){
+        socket.emit('save_user_id', {
+            user_id: '<%= username %>'
+        });
+    });
+
+    socket.on('disconnect', function(){
+
+    });
 
     var check = false;
 
@@ -87,8 +94,16 @@
         var roomname = $('#roomname').val().trim();
         roomname.toLowerCase();
         if (roomname === '') {
-            alertify.alert('Please enter RoomName', function () {
+            alertify.alert('Please enter RoomName.', function () {
                 //after clicking OK
+                $('#roomname').val('');
+                check = false;
+            });
+        }
+        else if( roomname.length >= 20 ){
+            alertify.alert('RoomName is too long.', function () {
+                //after clicking OK
+                $('#roomname').val('');
                 check = false;
             });
         }
@@ -96,13 +111,13 @@
             $.get('/CHECKROOMNAME?roomName=' + roomname.trim(), function (data, err) {
                 if (data == 'true') {
                     $('#roomname').val('');
-                    alertify.alert('RoomName already exists. Please enter another RoomName', function () {
+                    alertify.alert('RoomName already exists. Please enter another RoomName.', function () {
                         //after clicking OK
                         check = false;
                     });
                 }
                 else {
-                    alertify.alert('You can use this RoomName', function () {
+                    alertify.alert('You can use this RoomName.', function () {
                         //after clicking OK
                         check = true;
                     });
@@ -111,11 +126,11 @@
         }
     }
 
-    function checkscript1() {
+    function checkscript1(){
         var script = $('#roomname').val();
 
-        if ((script.search("<") != -1) || (script.search(">") != -1)) {
-            alertify.alert('cannot use < > sign', function () {
+        if( (script.search("<") != -1) || (script.search(">") != -1) ) {
+            alertify.alert('cannot use < > sign.', function () {
                 //after clicking OK
                 $('#roomname').val('');
             });

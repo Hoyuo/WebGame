@@ -15,11 +15,10 @@
     "serve-favicon": "~2.2.0",
     "stylus": "0.42.3",
     "ejs-locals": "*",
-    "socket.io": "0.9.6",
+    "socket.io": "*",
     "express-session": "*",
     "express-method-override": "*",
     "bootstrap": "*",
-    "mongoose": "3.8",
-    "cookie-session": "*"
+    "mongoose": "3.8"
   }
 }

@@ -1,18 +1,16 @@
 <% layout('layout') %>
 
-<div class="modal-content" style="text-align: left">
+<div class="modal-content" style ="text-align: left">
     roomName : <%= roomInfo.roomName %>
 </div>
 
 <div>
     <br/>
-
     <div style="display: flex;">
-        <div style="margin-top:50px; float: left;">
-            <image style="max-width:250px; max-height:350px;" src="Key.PNG"></image>
-        </div>
         <div style="max-width: 50%; height:auto;margin: auto;" id="emulator"></div>
     </div>
+    <br/>
+    <img src="Key.PNG"/>
     <br/>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/peer.js" type="text/javascript" charset="utf-8"></script>
@@ -31,7 +29,7 @@
     <script src="source/ui.js" type="text/javascript" charset="utf-8"></script>
 
     <script>
-        function goBack() {
+        function goBack(){
             history.go(-1);
         }
     </script>
@@ -58,6 +56,7 @@
         peer.on('open', function (id) {
             console.log("1P 고유 아이디 생성 : " + id);
             console.log("roomNum : " + roomNum);
+
             socket.emit('set_1p_peer_id', {
                 roomNum: roomNum,
                 peer_1p_id: id
@@ -72,12 +71,9 @@
                 });
             }, 1000 / 30);
 
-            conn.on('data', function (data) {
+            conn.on('data', function(data){
                 var flag = data.flag;
                 var key = data.key;
-
-                console.log(flag);
-                console.log(key);
 
                 switch (key) {
                     case 'A':
@@ -138,7 +134,7 @@
             });
         });
 
-        peer.on('data', function (data) {
+        peer.on('data', function(data){
 
         });
 
@@ -146,6 +142,7 @@
         peer.on('error', function (err) {
             console.log(err.message);
         });
+
 
 
         $(function () {
@@ -193,8 +190,10 @@
         });
 
         socket.on('new', function () {
-            socket.emit('webSingUp', userid + '_webPage');
         });
+
+        //todo Android Processing
+        socket.emit('join', {'roomNum': roomNum, 'roomname': roomname});
 
         //1P 버튼
         socket.on('btn_1', function (msg) {
@@ -256,7 +255,7 @@
         socket.on('pad_1', function (msg, flag) {
             switch (msg) {
                 case 'up':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 38});
                         nes.keyboard.keyPress({keyCode: 38});
                     } else {
@@ -264,7 +263,7 @@
                     }
                     break;
                 case 'right':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 39});
                         nes.keyboard.keyPress({keyCode: 39});
                     } else {
@@ -272,7 +271,7 @@
                     }
                     break;
                 case 'left':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 37});
                         nes.keyboard.keyPress({keyCode: 37});
                     } else {
@@ -280,7 +279,7 @@
                     }
                     break;
                 case 'down':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 40});
                         nes.keyboard.keyPress({keyCode: 40});
                     } else {
@@ -294,7 +293,7 @@
         socket.on('pad_2', function (msg, flag) {
             switch (msg) {
                 case 'up':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 104});
                         nes.keyboard.keyPress({keyCode: 104});
                     } else {
@@ -302,7 +301,7 @@
                     }
                     break;
                 case 'right':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 102});
                         nes.keyboard.keyPress({keyCode: 102});
                     } else {
@@ -310,7 +309,7 @@
                     }
                     break;
                 case 'left':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 100});
                         nes.keyboard.keyPress({keyCode: 100});
                     } else {
@@ -318,7 +317,7 @@
                     }
                     break;
                 case 'down':
-                    if (flag === 0) {
+                    if (flag == 0) {
                         nes.keyboard.keyDown({keyCode: 98});
                         nes.keyboard.keyPress({keyCode: 98});
                     } else {
@@ -334,12 +333,22 @@
             nes.start();
         });
 
-        socket.emit('disconnect', {});
+
+        socket.on('connect', function(){
+                socket.emit('save_user_id', {
+                 user_id: '<%= username %>',
+                 flag: 1
+                });
+        });
+
+        socket.on('disconnect', function(){
+
+        });
 
         //뒤로 가기 막기
         history.pushState(null, null, location.href);
         window.onpopstate = function (event) {
-            location.href = "/1P_OUT_ROOM?roomNum=" + roomNum;
+            location.href = "/1P_OUT_ROOM?roomNum="+roomNum;
         };
 
     </script>
